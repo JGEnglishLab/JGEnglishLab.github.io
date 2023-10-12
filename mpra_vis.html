@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Visualization - TRE MPRA </title>
+    <link rel="stylesheet" href="style.css"> <!-- Add this line to link the CSS file -->
+    <link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/3.18.1/build/cssreset/cssreset-min.css">
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <link href="https://fonts.googleapis.com/css?family=Work+Sans:400,700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <header>
+        <!-- <h1>TRE MPRA VIS</h1> -->
+        <div id="header-div">
+            <button id="treatment_view_button", class="view_button">Treatment Centric View</button>
+            <button id="motif_view_button", class="view_button">Motif Centric View <br> (Coming soon)</button>
+            <a id="lab_link" href = "https://www.english.biochem.utah.edu/">The English Lab</a>
+        </div>
+
+    </header>
+
+    <div id='loading-container'>
+        <div class='loading-animation'>
+          <div class='loader--dot'></div>
+          <div class='loader--dot'></div>
+          <div class='loader--dot'></div>
+          <div class='loader--dot'></div>
+          <div class='loader--dot'></div>
+          <div class='loader--text'></div>
+        </div>
+      </div>
+
+    <div id="wrapper">
+        <div id="treatment-wrapper-div" class="parent-div">
+            <div id="volcano-div" class="child-div">
+            </div>
+            <div class="right-column">
+            
+                <input type="text" id="searchBarBase" size="50" list="searchOptionsBase" style="float:right;"placeholder="Search basal conditions...">
+                <input type="text" id="searchBarStim" size="50" list="searchOptionsStim" style="float:right;"placeholder="Search stimulated conditions...">
+                <label for="searchBarBase", id = "search_bar_base_label">Basal Condition</label>
+                <label for="searchBarStim", id = "search_bar_stim_label">Stimulated Condition</label>
+
+            <div id="alpha-div" class="child-div">
+            </div>
+            <div id="info-div" class="child-div">
+                <div class="info-tooltip"></div>
+                    <button id="copy-button">Copy Selected Unit Sequence</button>
+                    <button id="copy-button-top" class="oligo_group">Copy Top Oligo</button>
+                    <button id="copy-button-bottom" class="oligo_group">Copy Bottom Oligo</button>
+                    <input type="text" id="searchBar" list="searchOptions" placeholder="Search Motifs...">
+                    <!-- <button id="filter_button">Filter By Searched Motif</button> -->
+
+                    <input type="checkbox", id="filter_motif_check">
+                    <label for="filter_motif_check", id = "filter_motif_check_label" >Filter By Searched Motif</label>
+
+                    <button id="show_button">Show All Motifs</button>
+
+                    <input type="checkbox", id="control_check" class="control_check_group">
+                    <label for="control_check", id = "control_check_label" class="control_check_group">Highlight Negative Controls</label>
+
+                    <input type="checkbox", id="top_check"class="top_check_group">
+                    <label for="top_check", id = "top_check_label"class="top_check_group">Highlight Top </label>
+                    <input id="number_selector" type="number" placeholder="5..." min="1" max="99"/>
+                </div>
+            </div>
+        </div>
+
+        <div id="motif-wrapper-div">
+            <input type="text" id="search_bar_motifs" size="10" list="allMotifs" placeholder="Search Motifs...">
+            <input type="text" id="sort_bar_options" size="10" list="allSortOptions" placeholder="Sort by...">
+
+            <div id="heat-div">
+            </div>
+            <div class="bottom-row">
+                <div id="scatter-div">
+                </div>
+                <div id="motif-info-div">
+                </div>
+            </div>
+            
+        </div>
+</body>
+<script type = "module" src="js/helper.js"></script>
+<script src="js/heat.js"></script>
+<script src="js/scatter.js"></script>
+<script src="js/motif-info.js"></script>
+<script src="js/volcano.js"></script>
+<script src="js/alpha.js"></script>
+<script src="js/info.js"></script>
+<script type = "module" src="js/script.js"></script>
+</html>
