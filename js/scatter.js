@@ -21,7 +21,7 @@ class Scatter{
         .attr('id', 'scatter_svg')
         .attr('width', this.WIDTH)
         .attr('height', this.HEIGHT)
-        .style("background-color", "grey")
+        // .style("background-color", "grey")
 
 
 

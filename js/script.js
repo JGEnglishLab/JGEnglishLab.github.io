@@ -1,5 +1,6 @@
 import helpers from './helper.js';
 
+
 // let scaleColor = d3.scaleOrdinal() 
 //   .domain([1,2,3,4,5])
 //   .range(["#845EC2",  
@@ -18,6 +19,7 @@ let scaleColor = d3.scaleOrdinal()
   "#FE6100" ,
   "#FFB000" 
 ]);
+
 
 
 class TwoWayMap {
@@ -91,11 +93,11 @@ d3.selectAll('#motif-wrapper-div').style("opacity", 0).style("pointer-events", "
 // d3.selectAll('#treatment-wrapper-div').style("opacity", 0).style("pointer-events", "none")
 
 
-// d3.select("#motif_view_button").on("click", function() {
-//   d3.select("#motif-wrapper-div").style("opacity", 1).style("pointer-events", "all")
-//   d3.select("#treatment-wrapper-div").style("opacity", 0).style("pointer-events", "none")
-//   d3.select("#header-div").style("pointer-events", "all")
-// });
+d3.select("#motif_view_button").on("click", function() {
+  d3.select("#motif-wrapper-div").style("opacity", 1).style("pointer-events", "all")
+  d3.select("#treatment-wrapper-div").style("opacity", 0).style("pointer-events", "none")
+  d3.select("#header-div").style("pointer-events", "all")
+});
 
 d3.select("#treatment_view_button").on("click", function() {
   d3.select("#treatment-wrapper-div").style("opacity", 1).style("pointer-events", "all")

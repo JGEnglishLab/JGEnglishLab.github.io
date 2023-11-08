@@ -14,7 +14,7 @@
         <!-- <h1>TRE MPRA VIS</h1> -->
         <div id="header-div">
             <button id="treatment_view_button", class="view_button">Treatment Centric View</button>
-            <button id="motif_view_button", class="view_button">Motif Centric View <br> (Coming soon)</button>
+            <button id="motif_view_button", class="view_button">Motif Centric View</button>
             <a id="lab_link" href = "https://www.english.biochem.utah.edu/">The English Lab</a>
         </div>
 
@@ -69,7 +69,12 @@
 
         <div id="motif-wrapper-div">
             <input type="text" id="search_bar_motifs" size="10" list="allMotifs" placeholder="Search Motifs...">
-            <input type="text" id="sort_bar_options" size="10" list="allSortOptions" placeholder="Sort by...">
+            <select name="Select an Option" id="option_drop_down">
+                <option value="Sort By RPM Ratio">Sort By RPM Ratio</option>
+                <option value="Sort Conditions Alphabetically">Sort Conditions Alphabetically</option>
+                <option value="Cluster">Cluster</option>
+            </select>
+
 
             <div id="heat-div">
             </div>

@@ -21,7 +21,7 @@ class Minfo{
         .attr('width', this.WIDTH)
         .attr('height', this.HEIGHT)
         // .attr("transform", `translate(10,70)`) //Move below the header div
-        .style("background-color", "yellow")
+        // .style("background-color", "yellow")
 
 
 
