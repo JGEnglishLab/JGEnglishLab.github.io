@@ -37,10 +37,23 @@
             </div>
             <div class="right-column">
             
-                <input type="text" id="searchBarBase" size="50" list="searchOptionsBase" style="float:right;"placeholder="Search basal conditions...">
-                <input type="text" id="searchBarStim" size="50" list="searchOptionsStim" style="float:right;"placeholder="Search stimulated conditions...">
-                <label for="searchBarBase", id = "search_bar_base_label">Basal Condition</label>
-                <label for="searchBarStim", id = "search_bar_stim_label">Stimulated Condition</label>
+                <!-- <input type="text" id="searchBarBase" size="50" list="searchOptionsBase" style="float:right;"placeholder="Search basal conditions..."> -->
+                <!-- <input type="text" id="searchBarStim" size="50" list="searchOptionsStim" style="float:right;"placeholder="Search stimulated conditions..."> -->
+                
+               
+
+                <select id="searchBarStim">
+                    <option value="">--Please choose a stimulated treatment--</option>
+                </select>
+                <select id="searchBarBase">
+                    <option value="">--Please choose a base treatment--</option>
+
+
+                </select>
+                
+                
+                <label for="searchBarBase", id = "search_bar_base_label">Select a Basal Condition</label>
+                <label for="searchBarStim", id = "search_bar_stim_label">Select a Stimulated Condition</label>
 
             <div id="alpha-div" class="child-div">
             </div>
@@ -73,6 +86,15 @@
                 <option value="Sort By RPM Ratio">Sort By RPM Ratio</option>
                 <option value="Sort Conditions Alphabetically">Sort Conditions Alphabetically</option>
                 <option value="Cluster">Cluster</option>
+
+                <optgroup label="Options 1">
+                    <option>Option 1.1</option>
+                    <option>Option 1.2</option>
+                  </optgroup>
+                  <optgroup label="Options 2">
+                    <option>Option 2.1</option>
+                    <option>Option 2.2</option>
+                  </optgroup>
             </select>
 
 

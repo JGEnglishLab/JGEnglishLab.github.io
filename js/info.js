@@ -413,7 +413,7 @@ class Info{
                         let [base_id, stim_id] = that.globalApplicationState.selected_comparison.split("_vs_")
                         base_id = base_id.replace("__", "||")
                         stim_id = stim_id.replace("__", "||")
-
+                        
                        
                         let base_time = that.globalApplicationState.time_map.get(base_id)
                         let stim_time = that.globalApplicationState.time_map.get(stim_id)

@@ -70,6 +70,7 @@ const globalApplicationState = {
     time_map: new Map(),
     cell_map: new Map(),
     long_name_map: new Map(),
+    tag_map: new Map(),
     display_name_map: new TwoWayMap(), //display_name takes shortname||treatment                                         
 
 
@@ -79,6 +80,8 @@ let all_data = d3.csv("./data/current_runs.csv")
 let sequences = d3.csv("./data/sequences.csv")
 let meta_data = d3.csv("./data/current_runs_meta_data.csv")
 let alpha_data = d3.csv("./data/current_runs_alpha_data.csv")
+
+
 
 
 let tooltip = d3.select("body")
@@ -108,10 +111,15 @@ d3.select("#treatment_view_button").on("click", function() {
 
 Promise.all([all_data, sequences, meta_data, alpha_data]).then( data =>
     {
+
+      showLoadingAnimation();
+
+      console.log("all_data", data[0])
+      console.log("meta_data", data[2])
+      console.log("alpha_data", data[3])
+
         for (let i=0; i<data[2].length; i++){
 
-          // Call these functions when loading data
-          showLoadingAnimation();
     
 
           let id = data[2][i]["treatment"] + "||" + data[2][i]["run_name"]
@@ -119,13 +127,19 @@ Promise.all([all_data, sequences, meta_data, alpha_data]).then( data =>
           let cur_cell_type = data[2][i]["cell_type"]
           let cur_long_name = data[2][i]["long_name"]
           let cur_concentration = data[2][i]["concentration"]
+          let cur_tag = data[2][i]["tag"]
+
 
           globalApplicationState.concentration_map.set(id, cur_concentration)
           globalApplicationState.time_map.set(id, cur_time)
           globalApplicationState.cell_map.set(id, cur_cell_type)
           globalApplicationState.long_name_map.set(id, cur_long_name)
+          globalApplicationState.tag_map.set(id, cur_tag)
+
 
         }
+
+     
 
         let columns = Object.keys(data[0][0])
 

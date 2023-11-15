@@ -114,11 +114,15 @@ class Alpha{
         }
 
 
+      
+
         this.bases = this.bases.filter(onlyUnique)
         this.stims = this.stims.filter(onlyUnique)
 
         this.updateSearchOptions(this.bases, "base")
         this.updateSearchOptions(this.stims, "stim")
+
+
 
         
         //*************************************** 
@@ -127,7 +131,11 @@ class Alpha{
 
         const that = this
 
-        // d3.select("#searchBarStim").on("change", function(d) {
+        //listeners
+        //on change, update the other options
+        //on click clear current selection for the one you clicked
+
+
         document.getElementById('searchBarStim').addEventListener('change', function(){
 
             var selectedOption = d3.select(this).property("value")
@@ -141,20 +149,26 @@ class Alpha{
             that.drawAlphaScatter()
             that.volcano.drawVolcano()
             that.filter_options(that.globalApplicationState.stimulated, "stim")
-            that.info.updateSearchOptions()
+            // that.info.updateSearchOptions() FIXME! I DON'T THINK I NEED THIS
             d3.select("#control_check").property('checked', false)
             d3.select("#top_check").property('checked', false)
             d3.select("#filter_motif_check").property('checked', false)
             that.globalApplicationState.selected_motif = "none"
+            })
 
-        })
         document.getElementById('searchBarStim').addEventListener('click', function(){
             document.getElementById('searchBarStim').value = '';
             that.globalApplicationState.stimulated = null
             that.drawAlphaScatter()
             that.volcano.drawVolcano()
-            that.filter_options(that.globalApplicationState.stimulated, "stim")
-            that.info.updateSearchOptions()
+            // that.filter_options(that.globalApplicationState.stimulated, "stim")
+
+            // that.updateSearchOptions(that.bases, "base")
+            if (this.value !=""){
+
+            that.updateSearchOptions(that.stims, "stim")
+            }
+
             d3.select("#control_check").property('checked', false)
             d3.select("#top_check").property('checked', false)
             d3.select("#filter_motif_check").property('checked', false)
@@ -172,16 +186,14 @@ class Alpha{
             }
             that.drawAlphaScatter()
             that.volcano.drawVolcano()
+
+
             that.filter_options(that.globalApplicationState.base, "base")
-            that.info.updateSearchOptions()
+            // that.info.updateSearchOptions() FIXME! I DON'T THINK I NEED THIS
             d3.select("#control_check").property('checked', false)
             d3.select("#top_check").property('checked', false)
             d3.select("#filter_motif_check").property('checked', false)
             that.globalApplicationState.selected_motif = "none"
-
-
-
-
         })
 
         document.getElementById('searchBarBase').addEventListener('click', function(){
@@ -189,13 +201,24 @@ class Alpha{
             that.globalApplicationState.base = null
             that.drawAlphaScatter()
             that.volcano.drawVolcano()
-            that.filter_options(that.globalApplicationState.base, "base")
-            that.info.updateSearchOptions()
+            // that.filter_options(that.globalApplicationState.base, "base")
+            if (this.value !=""){
+                that.updateSearchOptions(that.bases, "base")
+            }
+            // that.updateSearchOptions(that.stims, "stim")
+
+
+
+            // that.info.updateSearchOptions()
             d3.select("#control_check").property('checked', false)
             d3.select("#top_check").property('checked', false)
             d3.select("#filter_motif_check").property('checked', false)
             that.globalApplicationState.selected_motif = "none"
         })
+
+
+        //on click we should clear both options, and populate both lists.
+        //It shoul just call update search options with all options
 
        
         //**********************************************************************************************
@@ -258,39 +281,169 @@ class Alpha{
 
         this.points = this.alphaSvg.append('g')
 
+        
     }
 
 
-    updateSearchOptions(options, selector) {
+
+   
+
+
+
+    filter_options(option, selected_searchbar){
+        const that = this
+
+        console.log("option", option)
+        console.log("seleselected_searchbarcted", selected_searchbar)
+
+        // If they cleared a selection. Restore all options
+        if (option === null && selected_searchbar === "base"){
+            that.updateSearchOptions(that.stims, "stim")
+        }
+        else if (option === null && selected_searchbar === "stim"){
+            that.updateSearchOptions(that.bases, "base")
+        }
+
+        else if (option != null && selected_searchbar === "stim"){
+
+            console.log("that.stimMap.get(option)", that.stimMap.get(option))
+            that.updateSearchOptions(that.stimMap.get(option), "base")
+        }
+        else if (option != null && selected_searchbar === "base"){
+            that.updateSearchOptions(that.baseMap.get(option), "stim")
+        }
+    }
+
+
+
+
+
+    
+
+
+    updateSearchOptions(options, selector, t = "t") {
         const that = this
 
         if (selector === "stim"){
-            // Clear existing options
-            while (this.datalistStim.firstChild) {
-                this.datalistStim.removeChild(this.datalistStim.firstChild);
+         
+
+
+            var select = document.getElementById("searchBarStim");
+
+
+
+            while (select.firstChild) {
+                select.removeChild(select.firstChild);
             }
-        
-            // Add new options
+
+
+            let opt = document.createElement("option");
+            opt.text = "--Please choose a stimulated treatment--";
+            opt.value = "";
+            select.add(opt);
+            let all_tags = []
+            // Get all unique tags
             options.forEach(function(option) {
-                const optionElement = document.createElement("option");            
-                optionElement.value = option;
-                that.datalistStim.appendChild(optionElement);
+
+                let id = that.globalApplicationState.display_name_map.revGet(option)
+                let tag = that.globalApplicationState.tag_map.get(id)
+                
+                // if tag == ""{
+                // tag = "Misc."
+                //add a checker in the next loop
+               // }
+
+                if (!all_tags.includes(tag)){
+                    all_tags.push(tag)
+                }
             });
-            this.searchBarStim.appendChild(this.datalistStim);  
+
+            //Pair all options with each tag
+            all_tags.forEach(function(tag){
+                var optgroup = document.createElement("optgroup");
+                optgroup.label = tag;
+
+                options.forEach(function(option){
+
+                    let id = that.globalApplicationState.display_name_map.revGet(option)
+                    let cur_tag = that.globalApplicationState.tag_map.get(id)
+                    if (cur_tag === tag){
+                        let opt = document.createElement("option");
+                        opt.text = opt.value = option;    
+                        
+                        optgroup.appendChild(opt)
+                    }
+                })
+                select.appendChild(optgroup);
+            })
+
         }
 
         else if (selector === "base"){
-            while (this.datalistBase.firstChild) {
-                this.datalistBase.removeChild(this.datalistBase.firstChild);
-            }
         
-            // Add new options
+
+
+            var select = document.getElementById("searchBarBase");
+
+
+
+         
+            while (select.firstChild) {
+                select.removeChild(select.firstChild);
+            }
+
+
+            
+            // // // Create a new option
+            let opt = document.createElement("option");
+            opt.text = "--Please choose a base treatment--";
+            opt.value = "";
+            select.add(opt);
+
+
+            let all_tags = []
+            // Get all unique tags
             options.forEach(function(option) {
-                const optionElement = document.createElement("option");            
-                optionElement.value = option;
-                that.datalistBase.appendChild(optionElement);
+
+                console.log("YO ", option)
+                //format the option to be able to access the tag dictionary
+                // let id = option.replace("\t(", "||")
+                // id = id.replace(")", "")
+                let id = that.globalApplicationState.display_name_map.revGet(option)
+                let tag = that.globalApplicationState.tag_map.get(id)
+
+                
+               
+
+
+                if (!all_tags.includes(tag)){
+                    all_tags.push(tag)
+                }
             });
-            this.searchBarBase.appendChild(this.datalistBase);  
+
+            console.log("All_tags", all_tags)
+
+            //Pair all options with each tag
+            all_tags.forEach(function(tag){
+                var optgroup = document.createElement("optgroup");
+                optgroup.label = tag;
+
+                options.forEach(function(option){
+                    let id = that.globalApplicationState.display_name_map.revGet(option)
+                    let cur_tag = that.globalApplicationState.tag_map.get(id)
+                    if (cur_tag === tag){
+
+                        console.log("inner loop", option)
+                        let opt = document.createElement("option");
+                        opt.text = opt.value = option;    
+                        
+                        optgroup.appendChild(opt)
+                    }
+                })
+                select.appendChild(optgroup);
+            })
+        
+
         }
      
     }
@@ -314,6 +467,8 @@ class Alpha{
 
             let base_run = base_id.split("||")[1]
             let base_treatment = base_id.split("||")[0]
+
+            
 
             let stim_run = stim_id.split("||")[1]
             let stim_treatment = stim_id.split("||")[0]
@@ -491,26 +646,7 @@ class Alpha{
 
       
 
-    filter_options(option, selected_searchbar){
-        const that = this
-
-        // If they cleared a selection. Restore all options
-        if (option === null && selected_searchbar === "base"){
-            that.updateSearchOptions(that.stims, "stim")
-        }
-        else if (option === null && selected_searchbar === "stim"){
-            that.updateSearchOptions(that.bases, "base")
-        }
-
-        else if (option != null && selected_searchbar === "stim"){
-            that.updateSearchOptions(that.stimMap.get(option), "base")
-        }
-        else if (option != null && selected_searchbar === "base"){
-            that.updateSearchOptions(that.baseMap.get(option), "stim")
-        }
-
-
-    }
+    
 
     check_negative_controls(redraw){
         if (this.globalApplicationState.controls_checked) {
