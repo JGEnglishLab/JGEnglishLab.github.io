@@ -3,8 +3,8 @@ import pandas as pd
 import numpy as np
 import math
 
-PATH_TO_PAIRWISE_FILES = "./data/pairwise_res/"
-PATH_TO_EMPIRICAL_FILES = "./data/emp_res/"
+PATH_TO_PAIRWISE_FILES = "./data/comp_data/"
+PATH_TO_EMPIRICAL_FILES = "./data/emp_data/"
 PATH_TO_META_DATA = './data/meta_data/'
 PATH_TO_RESULTS = "./data"
 

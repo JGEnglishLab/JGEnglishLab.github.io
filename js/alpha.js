@@ -138,83 +138,209 @@ class Alpha{
 
         document.getElementById('searchBarStim').addEventListener('change', function(){
 
-            var selectedOption = d3.select(this).property("value")
+            console.log("I have changed")
 
-            if (!that.stims.includes(selectedOption)){
-                that.globalApplicationState.stimulated = null
-            }
-            else{
-                that.globalApplicationState.stimulated = selectedOption
-            }
+            var selectedOption = d3.select(this).property("value")
+            that.globalApplicationState.stimulated = selectedOption
+        
+            console.log("that.globalApplicationState.stimulated ", that.globalApplicationState.stimulated )
             that.drawAlphaScatter()
             that.volcano.drawVolcano()
+            if (document.getElementById('searchBarBase').value === ""){
             that.filter_options(that.globalApplicationState.stimulated, "stim")
-            // that.info.updateSearchOptions() FIXME! I DON'T THINK I NEED THIS
+            }
             d3.select("#control_check").property('checked', false)
             d3.select("#top_check").property('checked', false)
             d3.select("#filter_motif_check").property('checked', false)
             that.globalApplicationState.selected_motif = "none"
             })
 
-        document.getElementById('searchBarStim').addEventListener('click', function(){
-            document.getElementById('searchBarStim').value = '';
-            that.globalApplicationState.stimulated = null
-            that.drawAlphaScatter()
-            that.volcano.drawVolcano()
-            // that.filter_options(that.globalApplicationState.stimulated, "stim")
+        document.getElementById('searchBarStim').addEventListener('click', function(event){
 
-            // that.updateSearchOptions(that.bases, "base")
-            if (this.value !=""){
+      
 
-            that.updateSearchOptions(that.stims, "stim")
+            if (event.target === this){
+                console.log("I have been clicked")
+                if (this.value != ""){
+                    document.getElementById('searchBarBase').value = '';
+                    document.getElementById('searchBarStim').value = '';
+                    that.updateSearchOptions(that.bases, "base")
+                    that.updateSearchOptions(that.stims, "stim")
+                    }
+
+                that.globalApplicationState.stimulated = null
+                that.drawAlphaScatter()
+                that.volcano.drawVolcano()
+       
+
+                d3.select("#control_check").property('checked', false)
+                d3.select("#top_check").property('checked', false)
+                d3.select("#filter_motif_check").property('checked', false)
+                that.globalApplicationState.selected_motif = "none"
             }
-
-            d3.select("#control_check").property('checked', false)
-            d3.select("#top_check").property('checked', false)
-            d3.select("#filter_motif_check").property('checked', false)
-            that.globalApplicationState.selected_motif = "none"
         })
 
         document.getElementById('searchBarBase').addEventListener('change', function(){
 
+            console.log("I have changed")
+
+
             var selectedOption = d3.select(this).property("value")
-            if (!that.bases.includes(selectedOption)){
-                that.globalApplicationState.base = null
-            }
-            else{
-                that.globalApplicationState.base = selectedOption
-            }
+            console.log("selected option ", selectedOption)
+            that.globalApplicationState.base = selectedOption
+          
             that.drawAlphaScatter()
             that.volcano.drawVolcano()
-
+            if (document.getElementById('searchBarStim').value === ""){
 
             that.filter_options(that.globalApplicationState.base, "base")
-            // that.info.updateSearchOptions() FIXME! I DON'T THINK I NEED THIS
-            d3.select("#control_check").property('checked', false)
-            d3.select("#top_check").property('checked', false)
-            d3.select("#filter_motif_check").property('checked', false)
-            that.globalApplicationState.selected_motif = "none"
-        })
-
-        document.getElementById('searchBarBase').addEventListener('click', function(){
-            document.getElementById('searchBarBase').value = '';
-            that.globalApplicationState.base = null
-            that.drawAlphaScatter()
-            that.volcano.drawVolcano()
-            // that.filter_options(that.globalApplicationState.base, "base")
-            if (this.value !=""){
-                that.updateSearchOptions(that.bases, "base")
             }
-            // that.updateSearchOptions(that.stims, "stim")
-
-
-
-            // that.info.updateSearchOptions()
             d3.select("#control_check").property('checked', false)
             d3.select("#top_check").property('checked', false)
             d3.select("#filter_motif_check").property('checked', false)
             that.globalApplicationState.selected_motif = "none"
         })
+
+        document.getElementById('searchBarBase').addEventListener('click', function(event){
+
+            if (event.target === this){
+                console.log("I have been clicked")
+                if (this.value != ""){
+                    document.getElementById('searchBarBase').value = '';
+                    document.getElementById('searchBarStim').value = '';
+                    that.updateSearchOptions(that.bases, "base")
+                    that.updateSearchOptions(that.stims, "stim")
+                    }
+
+
+                that.globalApplicationState.base = null
+                that.drawAlphaScatter()
+                that.volcano.drawVolcano()
+                d3.select("#control_check").property('checked', false)
+                d3.select("#top_check").property('checked', false)
+                d3.select("#filter_motif_check").property('checked', false)
+                that.globalApplicationState.selected_motif = "none"
+
+            }
+        })
+
+
+        // document.getElementById('searchBarStim').addEventListener('change', function(){
+        //     console.log("I have changed")
+
+        //     var selectedOption = d3.select(this).property("value")
+        //     console.log("selectedOption", selectedOption)
+
+        //     if (!that.stims.includes(selectedOption)){
+        //         that.globalApplicationState.stimulated = null
+        //     }
+        //     else{
+        //         that.globalApplicationState.stimulated = selectedOption
+        //     }
+
+        //     console.log("that.globalApplicationState.stimulated ", that.globalApplicationState.stimulated )
+        //     that.drawAlphaScatter()
+        //     that.volcano.drawVolcano()
+        //     that.filter_options(that.globalApplicationState.stimulated, "stim")
+        //     // that.info.updateSearchOptions() FIXME! I DON'T THINK I NEED THIS
+        //     d3.select("#control_check").property('checked', false)
+        //     d3.select("#top_check").property('checked', false)
+        //     d3.select("#filter_motif_check").property('checked', false)
+        //     that.globalApplicationState.selected_motif = "none"
+        //     })
+
+        // document.getElementById('searchBarStim').addEventListener('click', function(event){
+
+      
+
+        //     if (event.target === this){
+        //         console.log("I have been clicked")
+
+        //         document.getElementById('searchBarStim').value = '';
+        //         that.globalApplicationState.stimulated = null
+        //         that.drawAlphaScatter()
+        //         that.volcano.drawVolcano()
+        //         // that.filter_options(that.globalApplicationState.stimulated, "stim")
+
+        //         // that.updateSearchOptions(that.bases, "base")
+
+
+        //         // if (this.value !=""){
+        //         // that.updateSearchOptions(that.stims, "stim")
+        //         // }
+
+        //         d3.select("#control_check").property('checked', false)
+        //         d3.select("#top_check").property('checked', false)
+        //         d3.select("#filter_motif_check").property('checked', false)
+        //         that.globalApplicationState.selected_motif = "none"
+        //     }
+        // })
+
+        // document.getElementById('searchBarBase').addEventListener('change', function(){
+
+        //     console.log("I have changed")
+
+
+        //     var selectedOption = d3.select(this).property("value")
+        //     console.log("selected option ", selectedOption)
+        //     if (!that.bases.includes(selectedOption)){
+        //         that.globalApplicationState.base = null
+        //     }
+        //     else{
+        //         that.globalApplicationState.base = selectedOption
+        //     }
+        //     that.drawAlphaScatter()
+        //     that.volcano.drawVolcano()
+
+  
+
+        //     // console.log("Here")
+        //     // console.log("that.globalApplicationState.base", that.globalApplicationState.base)
+        //     // console.log("that.baseMap", that.baseMap)
+
+
+        //     that.filter_options(that.globalApplicationState.base, "base")
+        //     // that.info.updateSearchOptions() FIXME! I DON'T THINK I NEED THIS
+        //     d3.select("#control_check").property('checked', false)
+        //     d3.select("#top_check").property('checked', false)
+        //     d3.select("#filter_motif_check").property('checked', false)
+        //     that.globalApplicationState.selected_motif = "none"
+        // })
+
+        // document.getElementById('searchBarBase').addEventListener('click', function(event){
+
+        //     if (event.target === this){
+
+
+
+        //     console.log("I have been clicked")
+        //     console.log(this.value)
+
+        //         document.getElementById('searchBarBase').value = '';
+
+        //         console.log(this.value)
+
+        //         that.globalApplicationState.base = null
+        //         that.drawAlphaScatter()
+        //         that.volcano.drawVolcano()
+
+        //         // that.filter_options(that.globalApplicationState.base, "base")
+        //         // if (this.value !=""){
+        //         //     console.log("in if")
+        //         //     that.updateSearchOptions(that.bases, "base")
+        //         // }
+        //         // that.updateSearchOptions(that.stims, "stim")
+
+
+
+        //         // that.info.updateSearchOptions()
+        //         d3.select("#control_check").property('checked', false)
+        //         d3.select("#top_check").property('checked', false)
+        //         d3.select("#filter_motif_check").property('checked', false)
+        //         that.globalApplicationState.selected_motif = "none"
+
+        //     }
+        // })
 
 
         //on click we should clear both options, and populate both lists.
@@ -293,11 +419,11 @@ class Alpha{
     filter_options(option, selected_searchbar){
         const that = this
 
-        console.log("option", option)
-        console.log("seleselected_searchbarcted", selected_searchbar)
+        // console.log("option", option)
+        // console.log("seleselected_searchbarcted", selected_searchbar)
 
         // If they cleared a selection. Restore all options
-        if (option === null && selected_searchbar === "base"){
+        if (option ===null && selected_searchbar === "base"){
             that.updateSearchOptions(that.stims, "stim")
         }
         else if (option === null && selected_searchbar === "stim"){
@@ -306,7 +432,7 @@ class Alpha{
 
         else if (option != null && selected_searchbar === "stim"){
 
-            console.log("that.stimMap.get(option)", that.stimMap.get(option))
+            // console.log("that.stimMap.get(option)", that.stimMap.get(option))
             that.updateSearchOptions(that.stimMap.get(option), "base")
         }
         else if (option != null && selected_searchbar === "base"){
@@ -321,7 +447,7 @@ class Alpha{
     
 
 
-    updateSearchOptions(options, selector, t = "t") {
+    updateSearchOptions(options, selector) {
         const that = this
 
         if (selector === "stim"){
@@ -393,6 +519,7 @@ class Alpha{
             }
 
 
+
             
             // // // Create a new option
             let opt = document.createElement("option");
@@ -405,7 +532,7 @@ class Alpha{
             // Get all unique tags
             options.forEach(function(option) {
 
-                console.log("YO ", option)
+                // console.log("YO ", option)
                 //format the option to be able to access the tag dictionary
                 // let id = option.replace("\t(", "||")
                 // id = id.replace(")", "")
@@ -421,7 +548,7 @@ class Alpha{
                 }
             });
 
-            console.log("All_tags", all_tags)
+            // console.log("All_tags", all_tags)
 
             //Pair all options with each tag
             all_tags.forEach(function(tag){
@@ -432,11 +559,8 @@ class Alpha{
                     let id = that.globalApplicationState.display_name_map.revGet(option)
                     let cur_tag = that.globalApplicationState.tag_map.get(id)
                     if (cur_tag === tag){
-
-                        console.log("inner loop", option)
                         let opt = document.createElement("option");
-                        opt.text = opt.value = option;    
-                        
+                        opt.text = opt.value = option;     
                         optgroup.appendChild(opt)
                     }
                 })
@@ -449,6 +573,7 @@ class Alpha{
     }
     
     drawAlphaScatter(selected_motif = "none"){
+
 
         if (this.globalApplicationState.base != null && this.globalApplicationState.stimulated != null){
 
