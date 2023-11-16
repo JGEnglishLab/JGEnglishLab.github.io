@@ -142,6 +142,7 @@ class Alpha{
 
             var selectedOption = d3.select(this).property("value")
             that.globalApplicationState.stimulated = selectedOption
+
         
             console.log("that.globalApplicationState.stimulated ", that.globalApplicationState.stimulated )
             that.drawAlphaScatter()
@@ -153,6 +154,8 @@ class Alpha{
             d3.select("#top_check").property('checked', false)
             d3.select("#filter_motif_check").property('checked', false)
             that.globalApplicationState.selected_motif = "none"
+            that.info.updateSearchOptions()
+
             })
 
         document.getElementById('searchBarStim').addEventListener('click', function(event){
@@ -169,6 +172,7 @@ class Alpha{
                     }
 
                 that.globalApplicationState.stimulated = null
+
                 that.drawAlphaScatter()
                 that.volcano.drawVolcano()
        
@@ -177,6 +181,8 @@ class Alpha{
                 d3.select("#top_check").property('checked', false)
                 d3.select("#filter_motif_check").property('checked', false)
                 that.globalApplicationState.selected_motif = "none"
+                that.info.updateSearchOptions()
+
             }
         })
 
@@ -185,9 +191,11 @@ class Alpha{
             console.log("I have changed")
 
 
+
             var selectedOption = d3.select(this).property("value")
             console.log("selected option ", selectedOption)
             that.globalApplicationState.base = selectedOption
+
           
             that.drawAlphaScatter()
             that.volcano.drawVolcano()
@@ -199,6 +207,8 @@ class Alpha{
             d3.select("#top_check").property('checked', false)
             d3.select("#filter_motif_check").property('checked', false)
             that.globalApplicationState.selected_motif = "none"
+            that.info.updateSearchOptions()
+
         })
 
         document.getElementById('searchBarBase').addEventListener('click', function(event){
@@ -214,12 +224,15 @@ class Alpha{
 
 
                 that.globalApplicationState.base = null
+
                 that.drawAlphaScatter()
                 that.volcano.drawVolcano()
                 d3.select("#control_check").property('checked', false)
                 d3.select("#top_check").property('checked', false)
                 d3.select("#filter_motif_check").property('checked', false)
                 that.globalApplicationState.selected_motif = "none"
+                that.info.updateSearchOptions()
+
 
             }
         })

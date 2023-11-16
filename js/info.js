@@ -599,15 +599,19 @@ class Info{
 
     
    updateSearchOptions() {
+    console.log("In info updateSearchOptions")
     const that = this
     let options = []
     if (this.globalApplicationState.base != null && this.globalApplicationState.stimulated != null){
+        console.log("Both Not Null")
+        console.log("this.globalApplicationState.motifs", this.globalApplicationState.motifs)
 
         //Get options as []
         options = this.globalApplicationState.motifs
 
         }
     else{
+        console.log("one or two null")
         options = []
         this.searchBar.value = ""
 
