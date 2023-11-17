@@ -160,6 +160,9 @@ class Alpha{
 
         document.getElementById('searchBarStim').addEventListener('click', function(event){
 
+            console.log("In click")
+            console.log("event.target", event.target)
+
       
 
             if (event.target === this){
@@ -212,6 +215,9 @@ class Alpha{
         })
 
         document.getElementById('searchBarBase').addEventListener('click', function(event){
+
+            console.log("In click")
+            console.log("event.target", event.target)
 
             if (event.target === this){
                 console.log("I have been clicked")
