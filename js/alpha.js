@@ -138,13 +138,13 @@ class Alpha{
 
         document.getElementById('searchBarStim').addEventListener('change', function(){
 
-            console.log("I have changed")
+            // console.log("I have changed")
 
             var selectedOption = d3.select(this).property("value")
             that.globalApplicationState.stimulated = selectedOption
 
         
-            console.log("that.globalApplicationState.stimulated ", that.globalApplicationState.stimulated )
+            // console.log("that.globalApplicationState.stimulated ", that.globalApplicationState.stimulated )
             that.drawAlphaScatter()
             that.volcano.drawVolcano()
             if (document.getElementById('searchBarBase').value === ""){
@@ -160,13 +160,14 @@ class Alpha{
 
         document.getElementById('searchBarStim').addEventListener('click', function(event){
 
-            console.log("In click")
-            console.log("event.target", event.target)
+            // console.log("In click")
+            // console.log("event.target", event.target)
+            // console.log("this.value", this.value)
 
       
 
-            if (event.target === this){
-                console.log("I have been clicked")
+            if (event.target === this && this.value != ""){
+                // console.log("I have been clicked")
                 if (this.value != ""){
                     document.getElementById('searchBarBase').value = '';
                     document.getElementById('searchBarStim').value = '';
@@ -196,7 +197,7 @@ class Alpha{
 
 
             var selectedOption = d3.select(this).property("value")
-            console.log("selected option ", selectedOption)
+            // console.log("selected option ", selectedOption)
             that.globalApplicationState.base = selectedOption
 
           
@@ -214,12 +215,25 @@ class Alpha{
 
         })
 
+        document.getElementById('searchBarBase').addEventListener('mousedown', function(){
+            console.log("mouse down")
+        })
+
+        document.getElementById('searchBarBase').addEventListener('input', function(){
+            console.log("input")
+        })
+
+
+        document.getElementById('searchBarBase').addEventListener('mouse up', function(){
+            console.log("mouse up")
+        })
+
         document.getElementById('searchBarBase').addEventListener('click', function(event){
 
             console.log("In click")
             console.log("event.target", event.target)
 
-            if (event.target === this){
+            if (event.target === this && this.value != ""){
                 console.log("I have been clicked")
                 if (this.value != ""){
                     document.getElementById('searchBarBase').value = '';

@@ -351,12 +351,8 @@ class Info{
         });
 
         document.getElementById('top_check').addEventListener('change', function(){
-            console.log("here")
             that.globalApplicationState.top_5_checked = d3.select(this).property("checked")
 
-            console.log("that.globalApplicationState.top_5_checked", that.globalApplicationState.top_5_checked)
-            console.log("control_checked", d3.select("#control_check").property("checked"))
-            console.log("motif_checked", d3.select("#filter_motif_check").property("checked"))
 
             if (that.globalApplicationState.top_5_checked){
                 d3.select("#control_check").property('checked', false)
@@ -599,19 +595,15 @@ class Info{
 
     
    updateSearchOptions() {
-    console.log("In info updateSearchOptions")
     const that = this
     let options = []
     if (this.globalApplicationState.base != null && this.globalApplicationState.stimulated != null){
-        console.log("Both Not Null")
-        console.log("this.globalApplicationState.motifs", this.globalApplicationState.motifs)
 
         //Get options as []
         options = this.globalApplicationState.motifs
 
         }
     else{
-        console.log("one or two null")
         options = []
         this.searchBar.value = ""
 
