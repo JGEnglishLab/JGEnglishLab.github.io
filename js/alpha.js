@@ -158,7 +158,7 @@ class Alpha{
 
             })
 
-        document.getElementById('searchBarStim').addEventListener('click', function(event){
+        document.getElementById('searchBarStim').addEventListener('mousedown', function(event){
 
             // console.log("In click")
             // console.log("event.target", event.target)
@@ -228,7 +228,7 @@ class Alpha{
             console.log("mouse up")
         })
 
-        document.getElementById('searchBarBase').addEventListener('click', function(event){
+        document.getElementById('searchBarBase').addEventListener('mousedown', function(event){
 
             console.log("In click")
             console.log("event.target", event.target)
