@@ -1,5 +1,5 @@
 const helpers = {
-    filter_comparison_data: function(all_data, base_treatment, stim_treatment, base_run, stim_run, selected_motif, min_RNA, min_DNA){
+    filter_comparison_data: function(all_data, base_treatment, stim_treatment, base_run, stim_run, selected_motif, min_RNA, min_DNA, filter_by_motif){
         //Takes all the data from for alpha/volcano and filters it.
         //Returns filtered data frame.
 
@@ -49,7 +49,7 @@ const helpers = {
 
         
         // If there is a highlighted motif, filter for it.
-        if (selected_motif != "none"){
+        if (selected_motif != "none" ){
             selected_data = selected_data.filter(function(d){return d.motif == selected_motif})
         }
 

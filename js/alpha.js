@@ -258,7 +258,7 @@ class Alpha{
         .attr("id", "base_text")
         .attr("transform","translate(" + this.WIDTH / 2 + " ," + (this.HEIGHT - 10) + ")")
         .style("text-anchor", "middle")
-        .text("Basal Alpha")
+        .text("Basal Transcription Rate")
         .style('fill', '#6C4343');
 
         this.alphaSvg
@@ -268,7 +268,7 @@ class Alpha{
         .attr("y", 15)
         .attr("x",-(this.HEIGHT/2))
         .style("text-anchor", "middle")
-        .text("Stimulated Alpha")
+        .text("Stimulated Transcription Rate")
         .style('fill', '#00429d');
 
 
@@ -470,20 +470,17 @@ class Alpha{
             let base_run = base_id.split("||")[1]
             let base_treatment = base_id.split("||")[0]
 
-            
-
             let stim_run = stim_id.split("||")[1]
             let stim_treatment = stim_id.split("||")[0]
            
-            this.stim_name = "alpha__"+stim_treatment+"__"+stim_run
-            this.base_name = "alpha__"+base_treatment+"__"+base_run
+            this.stim_name = "aggregate_rpm_ratio__"+stim_treatment+"__"+stim_run
+            this.base_name = "aggregate_rpm_ratio__"+base_treatment+"__"+base_run
             this.max_rank_name = "maxRank__" +base_treatment+"__"+base_run+"_vs_"+stim_treatment+"__"+stim_run
             this.n_rna_stim_name = "RNA_barcodes__" +stim_treatment+"__"+stim_run
             this.n_rna_base_name = "RNA_barcodes__" +base_treatment+"__"+base_run
 
-
-            d3.select("#base_text").text("Basal Alpha: "+base_display_name.split("(")[0])
-            d3.select("#stim_text").text("Stimulated Alpha: "+stim_display_name.split("(")[0])
+            d3.select("#base_text").text("Basal Transcription Rate: "+base_display_name.split("(")[0])
+            d3.select("#stim_text").text("Stimulated Transcription Rate: "+stim_display_name.split("(")[0])
 
             this.globalApplicationState.selected_comparison = base_treatment+"__"+base_run+"_vs_"+stim_treatment+"__"+stim_run
 
@@ -497,7 +494,8 @@ class Alpha{
                 stim_run, 
                 selected_motif, 
                 this.globalApplicationState.min_RNA, 
-                this.globalApplicationState.min_DNA)
+                this.globalApplicationState.min_DNA,
+                this.globalApplicationState.filter_by_motif)
 
             let selected_data = filter_res[0]
             this.globalApplicationState.motifs = filter_res[1]
@@ -637,8 +635,8 @@ class Alpha{
             this.points
                 .selectAll('circle')
                 .remove()
-            d3.select("#base_text").text("Basal Alpha")
-            d3.select("#stim_text").text("Stimulated Alpha")
+            d3.select("#base_text").text("Basal Transcription Rate")
+            d3.select("#stim_text").text("Stimulated Transcription Rate")
             this.info.clear()
         }
 

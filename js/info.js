@@ -75,14 +75,14 @@ class Info{
         .attr("id", "stimulated_text")
         .attr("y", this.MARGIN_TEXT_TOP + this.MARGIN_BETWEEN_TEXT * 3)
         .attr("x", this.MARGIN_TEXT_LEFT)
-        .text("Stimulated Alpha: ")
+        .text("Stimulated Transcription Rate: ")
         .style('fill', this.STIM_COLOR)
 
         this.infoSvg.append("text")
         .attr("id", "basal_text")
         .attr("y", this.MARGIN_TEXT_TOP + this.MARGIN_BETWEEN_TEXT * 4)
         .attr("x", this.MARGIN_TEXT_LEFT)
-        .text("Basal Alpha: ")
+        .text("Basal Transcription Rate: ")
         .style('fill', this.BASE_COLOR)
 
         var treatment_info = this.infoSvg
@@ -181,8 +181,15 @@ class Info{
             .on("end", function() {
                 d3.select(this).classed("active", false);
                 rna_slider_text.text("");
-                that.alpha.drawAlphaScatter(that.globalApplicationState.selected_motif)
-                that.volcano.drawVolcano(that.globalApplicationState.selected_motif)
+                if (that.globalApplicationState.filter_by_motif){
+                    that.alpha.drawAlphaScatter(that.globalApplicationState.selected_motif)
+                    that.volcano.drawVolcano(that.globalApplicationState.selected_motif)
+                }
+                else{
+                    that.alpha.drawAlphaScatter()
+                    that.volcano.drawVolcano()
+                }
+                
                 that.alpha.check_negative_controls(false)
                 that.volcano.check_negative_controls(false)
                 that.alpha.check_top_5(false)
@@ -256,8 +263,14 @@ class Info{
             .on("end", function() {
                 d3.select(this).classed("active", false);
                 dna_slider_text.text(""); 
-                that.alpha.drawAlphaScatter(that.globalApplicationState.selected_motif)
-                that.volcano.drawVolcano(that.globalApplicationState.selected_motif)
+                if (that.globalApplicationState.filter_by_motif){
+                    that.alpha.drawAlphaScatter(that.globalApplicationState.selected_motif)
+                    that.volcano.drawVolcano(that.globalApplicationState.selected_motif)
+                }
+                else{
+                    that.alpha.drawAlphaScatter()
+                    that.volcano.drawVolcano()
+                }
                 that.alpha.check_negative_controls(false)
                 that.volcano.check_negative_controls(false)
                 that.alpha.check_top_5(false)
@@ -304,6 +317,7 @@ class Info{
             if (isChecked){
                 let selected_motif = that.searchBar.value
                 that.globalApplicationState.selected_motif = selected_motif
+                that.globalApplicationState.filter_by_motif = true
                 that.alpha.drawAlphaScatter(selected_motif)
                 that.volcano.drawVolcano(selected_motif)
                 d3.select("#control_check").property('checked', false)
@@ -316,6 +330,8 @@ class Info{
                 that.globalApplicationState.selected_motif = "none"
                 that.alpha.drawAlphaScatter()
                 that.volcano.drawVolcano()
+                that.globalApplicationState.filter_by_motif = false
+
             }
         });
 
@@ -328,6 +344,8 @@ class Info{
             d3.select("#filter_motif_check").property('checked', false)
             that.globalApplicationState.top_5_checked = false
             that.globalApplicationState.controls_checked = false
+            that.globalApplicationState.filter_by_motif = false
+
         });
 
         document.getElementById("copy-button").addEventListener("click", function(event) {
@@ -344,6 +362,8 @@ class Info{
                 d3.select("#filter_motif_check").property('checked', false)
                 that.globalApplicationState.top_5_checked = false
                 that.globalApplicationState.selected_motif = "none"
+                that.globalApplicationState.filter_by_motif = false
+
 
             }
             that.alpha.check_negative_controls(true)
@@ -359,6 +379,7 @@ class Info{
                 d3.select("#filter_motif_check").property('checked', false)
                 that.globalApplicationState.controls_checked = false
                 that.globalApplicationState.selected_motif = "none"
+                that.globalApplicationState.filter_by_motif = false
 
             }
             that.alpha.check_top_5(true)
@@ -526,6 +547,48 @@ class Info{
             .style("top", "-300px")
           })
 
+          d3.selectAll('#stimulated_text').on("mouseover", (event, d) => {
+            d3.select(".tooltip")
+                .html("Transcription Rate = ∑(RNA RPM) / ∑(DNA RPM)")
+                .style("left", `${event.pageX + 30}px`)
+                .style("top", `${event.pageY - 60}px`)
+                .transition()
+                .delay(this.TOOL_TIP_DELAY)
+                .style("opacity", 1)
+          })
+          .on("mousemove", (event, d) => {
+            d3.select(".tooltip")
+              .style("left", `${event.pageX + 30}px`)
+              .style("top", `${event.pageY - 60}px`)
+          })
+          .on("mouseleave", (event, d) => {
+            d3.select(".tooltip")
+            .style("opacity", 0)
+            .style("left", "-300px")
+            .style("top", "-300px")
+          })
+
+          d3.selectAll('#basal_text').on("mouseover", (event, d) => {
+            d3.select(".tooltip")
+                .html("Transcription Rate = ∑(RNA RPM) / ∑(DNA RPM)")
+                .style("left", `${event.pageX + 30}px`)
+                .style("top", `${event.pageY - 60}px`)
+                .transition()
+                .delay(this.TOOL_TIP_DELAY)
+                .style("opacity", 1)
+          })
+          .on("mousemove", (event, d) => {
+            d3.select(".tooltip")
+              .style("left", `${event.pageX + 30}px`)
+              .style("top", `${event.pageY - 60}px`)
+          })
+          .on("mouseleave", (event, d) => {
+            d3.select(".tooltip")
+            .style("opacity", 0)
+            .style("left", "-300px")
+            .style("top", "-300px")
+          })
+
 
           d3.selectAll('.oligo_group').on("mouseover", (event, d) => {
             d3.select(".tooltip")
@@ -632,8 +695,8 @@ class Info{
         let base_run = this.globalApplicationState.selected_comparison.split("_vs_")[0].split("__")[1]
         let stim_treatment = this.globalApplicationState.selected_comparison.split("_vs_")[1].split("__")[0]
         let stim_run = this.globalApplicationState.selected_comparison.split("_vs_")[1].split("__")[1]
-        let base_alpha_name = "alpha__" + base_treatment + "__" + base_run
-        let stim_alpha_name = "alpha__" + stim_treatment + "__" + stim_run
+        let base_alpha_name = "aggregate_rpm_ratio__" + base_treatment + "__" + base_run
+        let stim_alpha_name = "aggregate_rpm_ratio__" + stim_treatment + "__" + stim_run
 
         let n_rna_stim_name = "RNA_barcodes__" +stim_treatment+"__"+stim_run
         let n_rna_base_name = "RNA_barcodes__" +base_treatment+"__"+base_run
@@ -650,8 +713,8 @@ class Info{
         this.infoSvg.select("#fdr_text").text("FDR: " + (+row[fdr_name]))
 
         this.infoSvg.select("#fc_text").text("Log Fold Change: " + (+row[fc_name]).toFixed(this.NUM_DEC))
-        this.infoSvg.select("#basal_text").text("Basal Alpha: " + (+row[base_alpha_name]).toFixed(this.NUM_DEC))
-        this.infoSvg.select("#stimulated_text").text("Stimulated Alpha: " + (+row[stim_alpha_name]).toFixed(this.NUM_DEC))
+        this.infoSvg.select("#basal_text").text("Basal Transcription Rate: " + (+row[base_alpha_name]).toFixed(this.NUM_DEC))
+        this.infoSvg.select("#stimulated_text").text("Stimulated Transcription Rate: " + (+row[stim_alpha_name]).toFixed(this.NUM_DEC))
         this.selected_architecture = row.architecture
     }
 
@@ -659,11 +722,15 @@ class Info{
         this.infoSvg.select("#architecture_text").text("Architecture: ")
         this.infoSvg.select("#fdr_text").text("FDR: ")
         this.infoSvg.select("#fc_text").text("Log Fold Change: ")
-        this.infoSvg.select("#basal_text").text("Basal Alpha: ")
-        this.infoSvg.select("#stimulated_text").text("Stimulated Alpha: ")
+        this.infoSvg.select("#basal_text").text("Basal Transcription Rate: ")
+        this.infoSvg.select("#stimulated_text").text("Stimulated Transcription Rate: ")
         this.selected_architecture = "none"
         this.rna_text.selectAll("text").remove()
         this.dna_text.selectAll("text").remove()
+        this.globalApplicationState.filter_by_motif = false
+        this.globalApplicationState.controls_checked = false
+        this.globalApplicationState.top_5_checked = false
+
     }
 
     draw_barcode_n(n_rna_stim, n_rna_base,n_dna_stim, n_dna_base){

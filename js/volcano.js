@@ -206,6 +206,8 @@ class Volcano{
             this.n_rna_base_name = "RNA_barcodes__" +base_treatment+"__"+base_run
             let fdr_name = "fdr__" +this.globalApplicationState.selected_comparison
 
+            
+
 
             let filter_res = this.h.filter_comparison_data(
                 this.all_data, 
@@ -215,7 +217,8 @@ class Volcano{
                 stim_run, 
                 selected_motif, 
                 this.globalApplicationState.min_RNA, 
-                this.globalApplicationState.min_DNA)
+                this.globalApplicationState.min_DNA,
+                this.globalApplicationState.filter_by_motif)
 
             let selected_data = filter_res[0]
             let max_statistic = filter_res[2]

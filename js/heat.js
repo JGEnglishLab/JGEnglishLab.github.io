@@ -23,7 +23,10 @@ class Heat{
         this.globalApplicationState = globalApplicationState
         this.all_data = all_data
         this.heat_div = d3.select("#heat-div") 
-        this.sort_type = "Sort By RPM Ratio"
+        this.sort_type = "Sort By Transcription Rate"
+
+       
+
 
         this.heatSvg = this.heat_div.append("svg")
         .attr('id', 'heat_svg')
@@ -40,13 +43,21 @@ class Heat{
         this.architectures = []
         this.conditions = []
 
+        this.heatSvg.append("text")
+        .attr("id", "legend_label")
+        .attr("y",25)
+        .attr("x", 1200)
+        .style("opacity", 0)
+        .text("Transcription Rate")
+     
+
         //Modify the names to look how we want
         for (let obj of this.all_data){
-            obj.alpha = obj.alpha.split("alpha__")[1]
+            obj.alpha = obj.alpha.split("aggregate_rpm_ratio__")[1]
             obj.alpha = obj.alpha.split("__")[0] + " (" + obj.alpha.split("__")[1]+")"
             obj.architecture = obj.architecture.split(",")[1] + ", " + obj.architecture.split(",")[2] + ", " + obj.architecture.split(",")[3]
         }
-
+        
         // const that = this
         let motifs = [...new Set(this.all_data.map((item) => item.motif))];    
         
@@ -68,7 +79,7 @@ class Heat{
 
         document.getElementById('option_drop_down').addEventListener('change', function(){
             var selectedOption = d3.select(this).property("value")
-            if (selectedOption == "Sort By RPM Ratio"){ //Rank by RPM
+            if (selectedOption == "Sort By Transcription Rate"){ //Rank by RPM
                 that.sort_architectures()
                 that.sort_conditions()
             }
@@ -107,6 +118,29 @@ class Heat{
         this.heatSvg.selectAll("rect").remove()
         this.HEAT_MAP_DRAWN = true
 
+        this.heatSvg
+        .select("#legend_label").style("opacity", 1)
+        .on("mouseover", (event, d) => {
+            d3.select(".tooltip")
+              .style("opacity", 1)
+              .html("Transcription Rate = ∑(RNA RPM) / ∑(DNA RPM)")
+              .style("left", `${event.pageX - 200}px`)
+              .style("top", `${event.pageY - 70}px`)
+          })
+          .on("mousemove", (event, d) => {
+            d3.select(".tooltip")
+              .style("left", `${event.pageX -200}px`)
+              .style("top", `${event.pageY - 70}px`)
+          })
+          .on("mouseleave", (event, d) => {
+            d3.select(".tooltip")
+            .style("opacity", 0)
+            .style("left", "-300px")
+            .style("top", "-300px")
+          })
+
+
+
 
         this.filtered_data = this.all_data.filter(function(d){return d.motif == selected_option})
         this.architectures = [...new Set(this.filtered_data.map((item) => item.architecture))];   
@@ -115,7 +149,7 @@ class Heat{
         console.log("sort_type", sort_type)
         console.log("first", this.conditions)
 
-        if (sort_type == "Sort By RPM Ratio"){
+        if (sort_type == "Sort By Transcription Rate"){
             this.sort_architectures()
             this.sort_conditions()    
         }
@@ -150,6 +184,7 @@ class Heat{
         .data(this.filtered_data)
         .enter()
         .append("rect")
+          .attr("id", "heat_rect")
           .attr("x", function(d) { return that.x_scale(d.alpha) })
           .attr("y", function(d) { return that.y_scale(d.architecture) })
           .attr("width", that.x_scale.bandwidth() )
@@ -157,6 +192,24 @@ class Heat{
           .style("fill", function(d) { return myColor(+d.Value)} )
           .style("stroke-width", 4)
           .style("opacity", 1)
+          .on("mouseover", (event, d) => {
+            d3.select(".tooltip")
+              .style("opacity", 1)
+              .html(`Condition: ${d.alpha}<br>Architecture: ${d.architecture}<br>Transcription Rate: ${d.Value}`)
+              .style("left", `${event.pageX + 30}px`)
+              .style("top", `${event.pageY - 10}px`)
+          })
+          .on("mousemove", (event, d) => {
+            d3.select(".tooltip")
+              .style("left", `${event.pageX + 30}px`)
+              .style("top", `${event.pageY - 10}px`)
+          })
+          .on("mouseleave", (event, d) => {
+            d3.select(".tooltip")
+            .style("opacity", 0)
+            .style("left", "-300px")
+            .style("top", "-300px")
+          })
 
           const legendWidth = 20; // Adjust the width as needed
           const legendHeight = 310; // Adjust the height as needed
@@ -195,6 +248,25 @@ class Heat{
             .style("fill", d => d)
             .attr("transform", `translate(1200,${this.SHIFT_LEGEND_DOWN})`)
             .attr("stroke", "grey") 
+            .on("mouseover", (event, d) => {
+                d3.select(".tooltip")
+                  .style("opacity", 1)
+                  .html("Transcription Rate = ∑(RNA RPM) / ∑(DNA RPM)")
+                  .style("left", `${event.pageX - 200}px`)
+                  .style("top", `${event.pageY - 70}px`)
+              })
+              .on("mousemove", (event, d) => {
+                d3.select(".tooltip")
+                  .style("left", `${event.pageX -200}px`)
+                  .style("top", `${event.pageY - 70}px`)
+              })
+              .on("mouseleave", (event, d) => {
+                d3.select(".tooltip")
+                .style("opacity", 0)
+                .style("left", "-300px")
+                .style("top", "-300px")
+              })
+    
 
             var yscale = d3.scaleLinear() 
             .domain([min_alpha, max_alpha]) 
@@ -207,6 +279,9 @@ class Heat{
             this.g_label
                 .attr("transform", `translate(1220,${this.SHIFT_LEGEND_DOWN})`) 
                 .call(y_axis)
+
+        
+            
       
         }
 
@@ -290,7 +365,7 @@ class Heat{
             this.x_axis.call(this.xAxis)
             this.y_axis.call(this.yAxis)
 
-            this.heatSvg.selectAll("rect")
+            this.heatSvg.selectAll("#heat_rect")
             .transition()
             .attr("x", function(d) { return that.x_scale(d.alpha) })
             .attr("y", function(d) { return that.y_scale(d.architecture) })

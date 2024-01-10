@@ -71,7 +71,10 @@ const globalApplicationState = {
     cell_map: new Map(),
     long_name_map: new Map(),
     tag_map: new Map(),
-    display_name_map: new TwoWayMap(), //display_name takes shortname||treatment                                         
+    display_name_map: new TwoWayMap(), //display_name takes shortname||treatment 
+    filter_by_motif: false,
+    motif_view_checked: false,
+    treatment_view_checked: true                                        
 
 
   };
@@ -80,6 +83,7 @@ let all_data = d3.csv("./data/current_runs.csv")
 let sequences = d3.csv("./data/sequences.csv")
 let meta_data = d3.csv("./data/current_runs_meta_data.csv")
 let alpha_data = d3.csv("./data/current_runs_alpha_data.csv")
+
 
 
 
@@ -100,13 +104,48 @@ d3.select("#motif_view_button").on("click", function() {
   d3.select("#motif-wrapper-div").style("opacity", 1).style("pointer-events", "all")
   d3.select("#treatment-wrapper-div").style("opacity", 0).style("pointer-events", "none")
   d3.select("#header-div").style("pointer-events", "all")
+  globalApplicationState.motif_view_checked = true
+  globalApplicationState.treatment_view_checked = false
+  d3.select(this).style("border", "4px solid black")
+  d3.select("#treatment_view_button").style("border", "2px solid lightgrey")
+
 });
 
 d3.select("#treatment_view_button").on("click", function() {
   d3.select("#treatment-wrapper-div").style("opacity", 1).style("pointer-events", "all")
   d3.select("#motif-wrapper-div").style("opacity", 0).style("pointer-events", "none")
   d3.select("#header-div").style("pointer-events", "all")
+  globalApplicationState.motif_view_checked = false
+  globalApplicationState.treatment_view_checked = true
+  d3.select(this).style("border", "4px solid black")
+  d3.select("#motif_view_button").style("border", "2px solid lightgrey")
+
 });
+
+
+d3.select("#treatment_view_button").on("mouseover", function() {
+  if (globalApplicationState.motif_view_checked){
+    d3.select(this).style("border", "4px solid lightgrey")
+  }
+});
+d3.select("#treatment_view_button").on("mouseleave", function() {
+  if (globalApplicationState.motif_view_checked){
+    d3.select(this).style("border", "2px solid lightgrey")
+  }
+});
+
+d3.select("#motif_view_button").on("mouseover", function() {
+  if (globalApplicationState.treatment_view_checked){
+    d3.select(this).style("border", "4px solid lightgrey")
+  }
+});
+
+d3.select("#motif_view_button").on("mouseleave", function() {
+  if (globalApplicationState.treatment_view_checked){
+    d3.select(this).style("border", "2px solid lightgrey")
+  }
+});
+
 
 
 Promise.all([all_data, sequences, meta_data, alpha_data]).then( data =>
@@ -117,6 +156,8 @@ Promise.all([all_data, sequences, meta_data, alpha_data]).then( data =>
       console.log("all_data", data[0])
       console.log("meta_data", data[2])
       console.log("alpha_data", data[3])
+
+      
 
         for (let i=0; i<data[2].length; i++){
 
@@ -135,13 +176,8 @@ Promise.all([all_data, sequences, meta_data, alpha_data]).then( data =>
           globalApplicationState.cell_map.set(id, cur_cell_type)
           globalApplicationState.long_name_map.set(id, cur_long_name)
           globalApplicationState.tag_map.set(id, cur_tag)
-
-
         }
-
-
-     
-
+        
         let columns = Object.keys(data[0][0])
 
 
