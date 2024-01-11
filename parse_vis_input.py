@@ -54,7 +54,7 @@ for file_name in os.listdir(PATH_TO_EMPIRICAL_FILES):
         cur_run = file_name.split("__")[0]
 
         #Get all the columns we want to keep
-        cur_csv = cur_csv.filter(regex='^architecture|^controls|^pval.mad|^DNA|^RNA|^statistic')
+        cur_csv = cur_csv.filter(regex='^architecture|^controls|^pval.mad|^DNA|^RNA|^statistic|^aggregate')
 
         #Rename all the statistic columns to alpha__treatment__run
         for col in cur_csv.columns:
@@ -159,7 +159,7 @@ final_df.to_csv(f"./{PATH_TO_RESULTS}/current_runs.csv")
 
 
 #Wrangle the data for the heat map.
-filter_col = [col for col in final_df if col.startswith('alpha_') or col == "motif" or col == "architecture" or col == "controls"]
+filter_col = [col for col in final_df if col.startswith('aggregate_') or col == "motif" or col == "architecture" or col == "controls"]
 
 alpha_df = final_df[filter_col]
 melted_df = pd.melt(alpha_df, id_vars=['architecture', 'motif', 'controls'], var_name='alpha', value_name='Value')
