@@ -484,8 +484,8 @@ class Info{
 
         d3.selectAll('.top_check_group').on("mouseover", (event, d) => {
             d3.select(".tooltip")
-                .html("Toggle on to see top N motifs.<br><br>The top group had the motif with the<br>highest absolute log fold 2 change × LRT.\
-                <br>The second group had the motif with the<br>second highest absolute log fold 2 change × LRT. \
+                .html("Toggle on to see top N motifs.<br><br>The top group had the motif with the<br>highest absolute log 2 fold change × LRT.\
+                <br>The second group had the motif with the<br>second highest absolute log 2 fold change × LRT. \
                 <br>etc.")
                 .style("left", `${event.pageX +30}px`)
                 .style("top", `${event.pageY - 10}px`)
