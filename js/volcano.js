@@ -79,7 +79,7 @@ class Volcano{
         .append("text")
         .attr("transform","translate(" + this.WIDTH / 2 + " ," + (this.HEIGHT - 10) + ")")
         .style("text-anchor", "middle")
-        .text("Log Fold Change");
+        .text("Log 2 Fold Change");
 
         this.volcanoSvg
         .append("text")

@@ -63,7 +63,7 @@ class Info{
         .attr("id", "fc_text")
         .attr("y", this.MARGIN_TEXT_TOP + this.MARGIN_BETWEEN_TEXT * 1)
         .attr("x", this.MARGIN_TEXT_LEFT)
-        .text("Log Fold Change: ")
+        .text("Log 2 Fold Change: ")
 
         this.infoSvg.append("text")
         .attr("id", "fdr_text")
@@ -484,8 +484,8 @@ class Info{
 
         d3.selectAll('.top_check_group').on("mouseover", (event, d) => {
             d3.select(".tooltip")
-                .html("Toggle on to see top N motifs.<br><br>The top group had the motif with the<br>highest absolute log fold change.\
-                <br>The second group had the motif with the<br>second highest absolute log fold change. \
+                .html("Toggle on to see top N motifs.<br><br>The top group had the motif with the<br>highest absolute log fold 2 change × LRT.\
+                <br>The second group had the motif with the<br>second highest absolute log fold 2 change × LRT. \
                 <br>etc.")
                 .style("left", `${event.pageX +30}px`)
                 .style("top", `${event.pageY - 10}px`)
@@ -712,7 +712,7 @@ class Info{
         // this.infoSvg.select("#fdr_text").text("FDR: " + (+row[fdr_name]).toFixed(this.NUM_DEC))
         this.infoSvg.select("#fdr_text").text("FDR: " + (+row[fdr_name]))
 
-        this.infoSvg.select("#fc_text").text("Log Fold Change: " + (+row[fc_name]).toFixed(this.NUM_DEC))
+        this.infoSvg.select("#fc_text").text("Log 2 Fold Change: " + (+row[fc_name]).toFixed(this.NUM_DEC))
         this.infoSvg.select("#basal_text").text("Basal Transcription Rate: " + (+row[base_alpha_name]).toFixed(this.NUM_DEC))
         this.infoSvg.select("#stimulated_text").text("Stimulated Transcription Rate: " + (+row[stim_alpha_name]).toFixed(this.NUM_DEC))
         this.selected_architecture = row.architecture
@@ -721,7 +721,7 @@ class Info{
     clear(){
         this.infoSvg.select("#architecture_text").text("Architecture: ")
         this.infoSvg.select("#fdr_text").text("FDR: ")
-        this.infoSvg.select("#fc_text").text("Log Fold Change: ")
+        this.infoSvg.select("#fc_text").text("Log 2 Fold Change: ")
         this.infoSvg.select("#basal_text").text("Basal Transcription Rate: ")
         this.infoSvg.select("#stimulated_text").text("Stimulated Transcription Rate: ")
         this.selected_architecture = "none"

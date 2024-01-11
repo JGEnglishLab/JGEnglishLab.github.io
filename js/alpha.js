@@ -53,7 +53,7 @@ class Alpha{
         this.alphaSvg.append("circle").attr("cx",this.LEGEND_CIRCLE_CX ).attr("cy",this.LEGEND_CIRCLE_CY + this.LEGEND_ROW_SEP * 4).attr("r", this.LEGEND_CIRCLE_R).attr("stroke", "black").style("fill", this.globalApplicationState.scaleColor(5))
 
         this.alphaSvg.append("text").attr("x",490).attr("y",90).text("Motif Ranking based on").style("font-size", "17px").attr("alignment-baseline","middle")
-        this.alphaSvg.append("text").attr("x",490).attr("y",110).text("absolute Log FC × LRT").style("font-size", "17px").attr("alignment-baseline","middle")
+        this.alphaSvg.append("text").attr("x",490).attr("y",110).text("absolute Log 2 FC × LRT").style("font-size", "17px").attr("alignment-baseline","middle")
 
         this.alphaSvg.append("text").attr("id","legend1").attr("x",this.LEGEND_RANK_X).attr("y",this.LEGEND_RANK_Y + this.LEGEND_ROW_SEP * 0).text("1").style("font-size", "15px").attr("alignment-baseline","middle")
         this.alphaSvg.append("text").attr("id","legend2").attr("x",this.LEGEND_RANK_X).attr("y",this.LEGEND_RANK_Y + this.LEGEND_ROW_SEP * 1).text("2").style("font-size", "15px").attr("alignment-baseline","middle")
