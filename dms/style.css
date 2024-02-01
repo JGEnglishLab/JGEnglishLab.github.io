@@ -1,0 +1,80 @@
+/* 
+DIVS AND WRAPPERS
+*/
+
+html, body {
+    height: 100%;
+    width: 100%;
+
+    margin: 0;
+}
+
+#wrapper{
+    height: 100%;
+    width: 100%;
+
+}
+#info-div{
+    /* border: 2px solid rgb(220, 67, 67);  */
+    height: 100%;
+    width: 40%;
+    background-color: rgb(211, 211, 211);
+    /* overflow-y:auto; */
+    /* box-shadow: 0px -2px 2px rgba(34,34,34,0.6); */
+
+    float:left;
+    position:sticky;
+    top: 0px
+ }
+#scroll-div{
+   height: 100%;
+   width: 60%;
+   overflow-y:auto;
+   float:right;
+   position:relative;
+   z-index: 1;
+   background-color: rgb(255, 255, 255);
+
+}
+#heat-sticky-div{
+    height: 50px;
+    width: 60%;
+    float:left;
+    position:sticky;
+    top:0px;
+    z-index: 2
+ }
+ #bar-sticky-div{
+    height: 50px;
+    width: 40%;
+    float:right;
+    position:sticky;
+    top:0px;
+    z-index: 2
+ }
+ #tooltip{
+    z-index: 3;
+ }
+/* 
+OTHER ELEMENTS
+*/
+.second-interaction{
+    opacity: .5;
+    pointer-events: none;
+    cursor: pointer;
+}
+
+#protein_select{
+    cursor: pointer;
+    
+}
+/* 
+.group-rect{
+    z-index: 0;
+    position: relative;
+}
+
+.mutant-labels{
+    z-index: 1;
+    position: relative;
+} */
