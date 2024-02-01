@@ -79,10 +79,10 @@ const globalApplicationState = {
 
   };
 
-let all_data = d3.csv("./data/current_runs.csv")
-let sequences = d3.csv("./data/sequences.csv")
-let meta_data = d3.csv("./data/current_runs_meta_data.csv")
-let alpha_data = d3.csv("./data/current_runs_alpha_data.csv")
+let all_data = d3.csv("tre_mpra/data/current_runs.csv")
+let sequences = d3.csv("tre_mpra/data/sequences.csv")
+let meta_data = d3.csv("tre_mpra/data/current_runs_meta_data.csv")
+let alpha_data = d3.csv("tre_mpra/data/current_runs_alpha_data.csv")
 
 
 
