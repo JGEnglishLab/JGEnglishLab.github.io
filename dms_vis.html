@@ -5,32 +5,70 @@
     <meta charset="UTF-8">
     <title>DMS</title>
     <link rel="stylesheet" href="dms/style.css"> 
-    <!-- <link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/3.18.1/build/cssreset/cssreset-min.css"> -->
     <script src="https://d3js.org/d3.v7.min.js"></script>
+
     <link href="https://fonts.googleapis.com/css?family=Work+Sans:400,700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.linearicons.com/free/1.0.0/icon-font.min.css">
+
 </head>
 <body>
     <!-- <img src="snake_plots/snake_oprm_human.svg" width="335" height="394" /> -->
 
     <div id="wrapper">
-        <div id="info-div">
-            <select id="protein_select">
-                <option value="Select A Protein">Select A Protein</option>
-            </select>
-            <select id="condition_select" class="second-interaction">
-                <option value="Select A Condition">Select A Condition</option>
-            </select>
-            <select id="sort_select" class="second-interaction">
-                <option value="properties">Properties</option>
-                <option value="size">Size (smallest to largest)</option>
-                <option value="hydropathy">Hydropathy (phobic to philic)</option>
-                <option value="chemical">Chemical</option>
-                <option value="donor_acceptor">Hydrogen donors and acceptors</option>
-                <option value="polarity">Polarity</option>
+        <div id="non-scroll-div">
+
+            
+            <div id="head-scatter-snake-div-wrapper">
+                <div id="head-div">
+                    <img id="logo" src="dms/data/logo1.svg"/>
+
+                    <select id="protein_select">
+                        <option value="Select A Protein">Select A Protein</option>
+                    </select>
+                    <select id="condition_select" class="second-interaction">
+                        <option value="Select A Condition">Select A Condition</option>
+                    </select>
+                </div>
+
+                <div id="scatter-div">
+                    <select id="condition_2_select" class="third-interaction">
+                        <option value="Select Second Condition">Select Second Condition</option>
+                    </select>
+                </div>
+
+                <div id="snake-div">
+                </div>
+            </div>
 
 
-            </select>
+            <div id="sequence-legend-div-wrapper">
+                <div id="sequence-legend-div-labels">
+                    <label for="sort_select", id="sort_select_label">Sort Amino Acids</label><br>
+                    <select id="sort_select" class="third-interaction">
+                        <option value="properties">Properties</option>
+                        <option value="size">Size</option>
+                        <option value="hydropathy">Hydropathy</option>
+                        <option value="chemical">Chemical</option>
+                        <option value="donor_acceptor">H-bonding</option>
+                        <option value="polarity">Polarity</option>
+                    </select>
+                    <label for="heat_select", id="heat_select_label">Heat Map Cell Type</label><br>
+                    <select id="heat_select" class="third-interaction">
+                        <option value="circles">circles</option>
+                        <option value="squares">squares</option>             
+                    </select>
+                </div>
+                <div id="sequence-legend-div"> 
+                </div>
+            </div>
+
+
+
+            
+
+
         </div>
+    
         <div id="scroll-div">
             <div id="heat-sticky-div">
             </div>
@@ -40,8 +78,13 @@
     </div>
 </body>
 <script src="dms/js/sequence.js"></script>
-<script src="dms/js/info.js"></script>
+<script src="dms/js/sequence_legend.js"></script>
+<script src="dms/js/head.js"></script>
+<script src="dms/js/scatter.js"></script>
+
+
 <script src="dms/js/utils.js"></script>
+
 
 <script type = "module" src="dms/js/script.js"></script>
 </html>

@@ -14,21 +14,72 @@ html, body {
     width: 100%;
 
 }
-#info-div{
-    /* border: 2px solid rgb(220, 67, 67);  */
+#non-scroll-div{
     height: 100%;
-    width: 40%;
-    background-color: rgb(211, 211, 211);
-    /* overflow-y:auto; */
-    /* box-shadow: 0px -2px 2px rgba(34,34,34,0.6); */
-
+    width: 60%;
+    background-color: rgb(255, 255, 255);
     float:left;
-    position:sticky;
-    top: 0px
+    /* position:sticky; */
+    top: 0px;
+    display: flex;
+       
+
+
+ }
+
+ #head-scatter-snake-div-wrapper{
+    background-color: rgba(255, 255, 255, 0.529);
+    /* width: 100%; */
+    flex-grow: 1;
+    float: left;
+    overflow-y:auto;
+    position: relative;
+
+ }
+ #head-div{
+    background-color: rgba(183, 183, 183, 0.293);
+    width: 100%;
+    height: 60px;
+    position: sticky;
+ }
+ #scatter-div{
+    background-color: rgba(255, 255, 255);
+    width: 100%;
+    height: 50%;
+ }
+ #snake-div{
+    background-color: rgba(255, 255, 255);
+    width: 100%;
+    height: 50%;
+ }
+
+ #sequence-legend-div-wrapper{
+    height: 100%;
+    background-color: rgba(226, 226, 226, 0.899);
+    float:right;
+    margin-right: 2px;
+    margin-left: 2px;
+    /* position: relative; */
+ }
+
+ #sequence-legend-div-labels{
+    height: 120px;
+    background-color: rgb(255, 255, 255);
+    /* display: table; */
+    float:right;
+    margin-right: 2px;
+    margin-left: 2px; 
+ }
+
+ #sequence-legend-div{
+    height: 100%;
+    background-color: rgb(255, 255, 255);
+    margin-right: 2px;
+    margin-left: 2px; 
  }
 #scroll-div{
    height: 100%;
-   width: 60%;
+   width: 40%;
    overflow-y:auto;
    float:right;
    position:relative;
@@ -38,7 +89,7 @@ html, body {
 }
 #heat-sticky-div{
     height: 50px;
-    width: 60%;
+    width: 70%;
     float:left;
     position:sticky;
     top:0px;
@@ -46,7 +97,7 @@ html, body {
  }
  #bar-sticky-div{
     height: 50px;
-    width: 40%;
+    width: 30%;
     float:right;
     position:sticky;
     top:0px;
@@ -55,26 +106,68 @@ html, body {
  #tooltip{
     z-index: 3;
  }
+
+ #logo{
+    margin-left: 0px;
+    margin-top: -10px;
+    height: 70px;
+    width: 120px;
+ }
+
+ 
+
+
 /* 
 OTHER ELEMENTS
 */
+.third-interaction{
+    opacity: .5;
+    pointer-events: none;
+    cursor: pointer;
+    font-family:monospace;
+
+
+}
 .second-interaction{
     opacity: .5;
     pointer-events: none;
     cursor: pointer;
+    font-family:monospace;
+
 }
 
 #protein_select{
     cursor: pointer;
-    
+    font-family:monospace;
+    position: absolute;
+    margin-top: 5px;
 }
-/* 
-.group-rect{
-    z-index: 0;
-    position: relative;
+#condition_select{
+    position: absolute;
+    margin-top: 30px;
 }
 
-.mutant-labels{
-    z-index: 1;
-    position: relative;
-} */
+
+
+#sort_select{
+    position: absolute;
+    top: 90px
+}
+
+#sort_select_label{
+    position: absolute;
+    font-family:monospace;
+    top: 70px
+}
+
+#heat_select{
+    position: absolute;
+    font-family:monospace;
+}
+#heat_select_label{
+    font-family:monospace;
+}
+
+#question_icon{
+    cursor: help;
+}

@@ -171,19 +171,19 @@ function returnGroupings(sorting){
         groupings.push({
             start:"R",
             stop:"W",
-            type:"Donor",
+            type:"Hydrogen Donor",
             color:"#ff0000" // Red
         })
         groupings.push({
             start:"D",
             stop:"E",
-            type:"Acceptor",
+            type:"Hydrogen Acceptor",
             color:"#0000ff" // Blue
         })
         groupings.push({
             start:"N",
             stop:"Y",
-            type:"Donor and Acceptor",
+            type:"Hydrogen Donor and Acceptor",
             color:"#ffd700" // gold
         })
         groupings.push({

@@ -10,7 +10,7 @@ class Sequence{
         this.MARGINS = { top: 50, left: 80, right: 20, bottom: 10 }
         this.SQUARE_SIZE = 15
         this.RADIUS = 15
-        this.HEAT_PERCENT = 60
+        this.HEAT_PERCENT = 70
         this.TRANSITION_TIME = 1000
         this.RECT_OPACITY = .3
         
@@ -35,9 +35,12 @@ class Sequence{
         this.HEAT_DRAWN = false
         this.FIRST_TIME_DRAWING = true
         this.NEW_GROUPING = true
+        this.FILTERING = false
+        this.highlighted = []
         this.sorting = "properties"
         this.domain = returnOrder(this.sorting)
         this.grouping = returnGroupings(this.sorting)
+        this.cell_type = "circles"
 
 
 
@@ -56,7 +59,7 @@ class Sequence{
     clear(){
         if (this.HEAT_DRAWN){
 
-    
+            this.FILTERING=false
             d3.select("#bar_svg")
             .remove()
             d3.select("#heat_svg")
@@ -73,6 +76,56 @@ class Sequence{
     resize(){
         this.clear()
         this.drawHeatMap()
+    }
+
+    change_cells(value){
+        const that = this
+
+        if(value == "squares"){
+            this.cell_type = "squares"
+            this.heat_svg.selectAll("rect")
+            .transition()
+            .duration(this.TRANSITION_TIME)
+            .style("opacity", 1)
+
+            this.heat_svg.selectAll("line")
+            .transition()
+            .duration(this.TRANSITION_TIME)
+            .style("opacity", .1)
+
+           
+        }
+        if(value == "circles"){
+
+            console.log("this.filter_values", this.filter_values)
+            this.cell_type = "circles"
+            this.heat_svg.selectAll("rect")
+            .transition()
+            .duration(this.TRANSITION_TIME)
+            .style("opacity", function(d){
+                if (that.FILTERING){
+
+                    if (that.highlighted.includes(d.pos+d.mut)){
+                        return(0)
+                    }
+                    else{
+                        return(1)
+
+                    }
+
+                }
+                else{
+                    return(0)
+                }
+            })
+
+            this.heat_svg.selectAll("line")
+            .transition()
+            .duration(this.TRANSITION_TIME)
+            .style("opacity", .5)
+
+         
+        }
     }
 
     draw_mutant_labels(){
@@ -108,9 +161,26 @@ class Sequence{
             .enter()
             .append("rect")
             .attr("class", "group-rect")
-            .on("mouseover", this.mouseover)
-            .on("mousemove", this.grouping_mousemove)
-            .on("mouseleave", this.mouseleave)
+            .on("mouseover", function(event, d){
+                d3.select(".tooltip")
+                  .style("opacity", 1)
+                d3.select(this)
+                  .style("stroke", "black")
+                  .style("stroke-width", 2)
+                  .style("stroke-opacity", 1)
+              })
+            .on("mousemove", function(event,d){
+                d3.select(".tooltip")
+                .html(d.type)
+                .style("left", `${event.pageX - 50}px`)
+                .style("top", `${event.pageY + 20}px`)
+            })
+            .on("mouseleave", function(d,event){
+                d3.select(".tooltip")
+                  .style("opacity", 0)
+                d3.select(this)
+                .style("stroke", "none")
+            })
             .style("opacity", this.RECT_OPACITY)
             .attr("x", function(d){
                 return(that.x_scale(d.start) - that.max_radius)})
@@ -162,6 +232,11 @@ class Sequence{
         .duration(this.TRANSITION_TIME)
         .attr("cx", function(d) {  return (that.x_scale(d.mut)) })
 
+        this.heat_svg.selectAll("rect")
+        .transition()
+        .duration(this.TRANSITION_TIME)
+        .attr("x", function(d) { return (that.x_scale(d.mut) - that.max_radius)  })
+
         this.NEW_GROUPING = false
     }
 
@@ -171,8 +246,8 @@ class Sequence{
         return([...new Set(this.protein_data.map((item) => item.condition))])
     }
 
-    setInfo(info){
-        this.info = info
+    setLegend(legend){
+        this.legend = legend
     }
 
     setCondition(selected_condition){
@@ -188,18 +263,10 @@ class Sequence{
         this.max_value =  d3.max(this.filtered_data.map(d => +d.value))
         this.min_value =  d3.min(this.filtered_data.map(d => +d.value))
         this.max_abs = d3.max([Math.abs(this.max_value), Math.abs(this.min_value)])
-        // this.color_scale = d3.scaleDiverging()
-        //     .interpolator(d3.interpolateRdBu)
-        //     // .range(["#d7191c"," #ffffbf", "#2c7bb6"])
-        //     // .interpolator(d3.interpolateBrBG)
-        //     // .interpolator(d3.interpolatePuOr)
-        //     .domain([this.min_value,0,this.max_value])
 
         this.color_scale = d3.scaleDiverging()
         .interpolator(d3.interpolateRdBu)
-                    // .range(["#d7191c"," #ffffbf", "#2c7bb6"])
-
-            .domain([this.max_abs,0,this.max_abs*-1])
+        .domain([this.max_abs,0,this.max_abs*-1])
 
     }
 
@@ -211,41 +278,69 @@ class Sequence{
         return ans.reverse();
     }
 
+    filterHeatMap(values, selection){
+
+        let highlighted = [...new Set(values.map((item) => item.pos+item.mut))];  
 
 
-    mouseover(event, d) {
-        d3.select(".tooltip")
-          .style("opacity", 1)
-        d3.select(this)
-          .style("stroke", "black")
-          .style("stroke-width", .5)
-          .style("stroke-opacity", 1)
-      }
-    circle_mousemove(event, d) {
-        d3.select(".tooltip")
-          .html("Val: " + truncateDecimals(+d.value,3) + "<br>Position: " + d.pos + "<br>WT: " + d.wt + "<br> Mutation: "+ d.mut)
-          .style("left", `${event.pageX - 100}px`)
-          .style("top", `${event.pageY - 30}px`)
-      }
-    grouping_mousemove(event, d) {
 
-        d3.select(".tooltip")
-          .html(d.type)
-          .style("left", `${event.pageX - 50}px`)
-          .style("top", `${event.pageY + 20}px`)
-      }
-    mouseleave(event, d) {
-        d3.select(".tooltip")
-          .style("opacity", 0)
-        d3.select(this)
-          .style("stroke", "none")
+        console.log(values)
+        const that = this
+        
+        if(selection){ //Extent will be null on reset
+            this.FILTERING = true
+            this.highlighted = highlighted
+            this.heat_svg
+            .selectAll("rect")
+            .style("opacity", function(d){
+                let pos_mut = d.pos + d.mut
+                if (highlighted.includes(pos_mut)){
+                    if(that.cell_type == "circles"){
+                        return(0)
+                    }
+                    else{
+                        return(1)
+                    }
+                }
+                else{
+                    return(1)
+                }
+            })
 
-      }
+            .style("stroke-width", 1)
+            .style("stroke-opacity", 1)
+            .style("stroke", "black")
+            .style("fill", function(d){
+                let pos_mut = d.pos + d.mut
+                if (highlighted.includes(pos_mut)){
+                    return(that.color_scale(d.value))
+                }
+                else{
+                    return("darkgrey")
+                }
+            })
+
+      
+        }
+        else{
+            //For now. 
+            //Later just reset it to the current settings!
+            this.FILTERING = false
+            this.filter_values = []
+            this.clear()
+            this.drawHeatMap()
+        }
+    }
+
+
+
+    
 
 
     drawHeatMap(){
-        if (this.selected_condition){
-            this.info.drawLegend()
+        if (this.selected_condition && this.selected_condition!= "Select A Condition"){
+            this.legend.clear()
+            this.legend.drawLegend()
             this.HEAT_DRAWN = true
             const that = this
 
@@ -313,7 +408,6 @@ class Sequence{
                 }})
              .attr("x2", 0)
              .attr("x1", this.heat_width - this.max_radius)
-             .style("opacity", .5)
              .style("stroke", function(d){
                  if (d == 0 || d%5 == 0 || d == that.n_positions){
                      return("black")
@@ -330,6 +424,14 @@ class Sequence{
                      return(1)
                  }
              })
+             .style("opacity", function(){
+                if (that.cell_type == "circles"){
+                    return(.5)
+                }
+                else{
+                    return(0)
+                }
+            })
  
              //draw verticle lines
              this.heat_svg.selectAll()
@@ -348,9 +450,17 @@ class Sequence{
                 }})
              .attr("y2", 0 + this.max_radius)
              .attr("y1", cur_svg_height - this.max_radius)
-             .style("opacity", .5)
              .style("stroke", "lightgrey")
              .style("stroke-width", 1)
+             .style("opacity", function(){
+                if (that.cell_type === "circles"){
+                    return(.5)
+                }
+                else{
+                    return(0)
+                }
+            })
+             
  
 
        
@@ -359,13 +469,8 @@ class Sequence{
             .data(this.filtered_data)
             .enter()
             .append("circle")
-            .on("mouseover", this.mouseover)
-            .on("mousemove", this.circle_mousemove)
-            .on("mouseleave", this.mouseleave)
             .attr("cx", function(d) { return (that.x_scale(d.mut)) })
             .attr("cy", function(d) { return (that.y_scale(d.pos)) })
-            .style("opacity", 0) 
-            .style("opacity", 1)
             .transition() 
             .duration(function(){
                 if (that.FIRST_TIME_DRAWING){
@@ -376,6 +481,74 @@ class Sequence{
                 }})
             .attr("r", function(d){return (r_scale(Math.abs(d.value)))})
             .style("fill", function(d){return (that.color_scale(d.value))})
+          
+
+            //Draw rectangles
+            this.heat_svg.selectAll()
+            .data(this.filtered_data)
+            .enter()
+            .append("rect")
+            .attr("x", function(d) { return (that.x_scale(d.mut) - that.max_radius)  })
+            .attr("y", function(d) { return (that.y_scale(d.pos) - that.max_radius) })   
+            .attr("width", this.max_radius*2)
+            .attr("height", this.max_radius*2)  
+            .style("fill", function(d){
+                if (!isNaN(+d.value)){
+                    return (that.color_scale(d.value))
+                }
+                else{
+                    return("lightgrey")
+                }
+                })
+            .style("opacity", function(){
+                if (that.cell_type == "squares"){
+                    return(1)
+                }
+                else{
+                    return(0)
+                }
+            })
+            .on("mouseover", function(event,d){
+
+                d3.select(".tooltip")
+                .style("opacity",1)
+                if (!that.FILTERING){
+                    d3.select(this)
+                        .style("opacity", .5)
+                        .style("stroke", "black")
+                        .style("stroke-width", 2)
+                        .style("stroke-opacity", 1)
+                }
+                
+            })
+            .on("mousemove", function(event,d){
+                // if (!that.FILTERING){
+
+                d3.select(".tooltip")
+                  .html("Val: " + truncateDecimals(+d.value,3) + "<br>Position: " + d.pos + "<br>WT: " + d.wt + "<br> Mutation: "+ d.mut)
+                  .style("left", `${event.pageX - 100}px`)
+                  .style("top", `${event.pageY - 30}px`)
+                // }
+            })
+            .on("mouseleave", function(event,d){
+
+                d3.select(".tooltip")
+                .style("opacity", 0)
+
+                if (!that.FILTERING){
+                    d3.select(this)
+                    .style("opacity", function(){
+                        if (that.cell_type == "circles"){
+                            return(0)
+                        }
+                        else{
+                            return(1)
+                        }
+                        })
+                        .style("stroke", "none")
+                }
+            })
+           
             
             this.draw_group_boxes()
             this.draw_mutant_labels()
