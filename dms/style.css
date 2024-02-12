@@ -2,6 +2,10 @@
 DIVS AND WRAPPERS
 */
 
+:root{
+    --background-grey: rgb(183, 183, 183, 0.293);
+}
+
 html, body {
     height: 100%;
     width: 100%;
@@ -32,12 +36,12 @@ html, body {
     /* width: 100%; */
     flex-grow: 1;
     float: left;
-    overflow-y:auto;
+    overflow-y:scroll;
     position: relative;
 
  }
  #head-div{
-    background-color: rgba(183, 183, 183, 0.293);
+    background-color: var(--background-grey);
     width: 100%;
     height: 60px;
     position: sticky;
@@ -55,32 +59,34 @@ html, body {
 
  #sequence-legend-div-wrapper{
     height: 100%;
-    background-color: rgba(226, 226, 226, 0.899);
+    background-color: rgba(181, 0, 0, 0.899);
     float:right;
-    margin-right: 2px;
-    margin-left: 2px;
-    /* position: relative; */
+    margin-right: 0px;
+    margin-left: 0px;
  }
 
  #sequence-legend-div-labels{
     height: 120px;
-    background-color: rgb(255, 255, 255);
+    width:100%;
+    background-color: var(--background-grey);
     /* display: table; */
     float:right;
-    margin-right: 2px;
-    margin-left: 2px; 
+    margin-right: 0px;
+    margin-left: 0px; 
  }
 
  #sequence-legend-div{
     height: 100%;
+    width: 145px;
     background-color: rgb(255, 255, 255);
-    margin-right: 2px;
-    margin-left: 2px; 
+    margin-right: 0px;
+    margin-left: 0px;
+    /* float: right;  */
  }
 #scroll-div{
    height: 100%;
    width: 40%;
-   overflow-y:auto;
+   overflow-y:scroll;
    float:right;
    position:relative;
    z-index: 1;
@@ -98,7 +104,7 @@ html, body {
  #bar-sticky-div{
     height: 50px;
     width: 30%;
-    float:right;
+    float:left;
     position:sticky;
     top:0px;
     z-index: 2
@@ -125,8 +131,12 @@ OTHER ELEMENTS
     pointer-events: none;
     cursor: pointer;
     font-family:monospace;
-
-
+}
+.fourth-interaction{
+    opacity: .5;
+    pointer-events: none;
+    cursor: pointer;
+    font-family:monospace;
 }
 .second-interaction{
     opacity: .5;
@@ -151,22 +161,24 @@ OTHER ELEMENTS
 
 #sort_select{
     position: absolute;
-    top: 90px
+    top: 40px;
+
 }
 
 #sort_select_label{
     position: absolute;
     font-family:monospace;
-    top: 70px
+    top: 20px;
 }
 
-#heat_select{
-    position: absolute;
+#heat_frequency_button{
+    position: relative;
     font-family:monospace;
+    top: 60px;
+    display: inline-block;
+
 }
-#heat_select_label{
-    font-family:monospace;
-}
+
 
 #question_icon{
     cursor: help;

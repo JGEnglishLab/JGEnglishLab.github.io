@@ -40,7 +40,7 @@ class Sequence{
         this.sorting = "properties"
         this.domain = returnOrder(this.sorting)
         this.grouping = returnGroupings(this.sorting)
-        this.cell_type = "circles"
+        this.cell_type = "squares"
 
 
 
@@ -97,7 +97,6 @@ class Sequence{
         }
         if(value == "circles"){
 
-            console.log("this.filter_values", this.filter_values)
             this.cell_type = "circles"
             this.heat_svg.selectAll("rect")
             .transition()
@@ -264,6 +263,10 @@ class Sequence{
         this.min_value =  d3.min(this.filtered_data.map(d => +d.value))
         this.max_abs = d3.max([Math.abs(this.max_value), Math.abs(this.min_value)])
 
+        this.min_freq = d3.min(this.filtered_data.map(d => +d.freq))
+        this.max_freq = d3.max(this.filtered_data.map(d => +d.freq))
+
+
         this.color_scale = d3.scaleDiverging()
         .interpolator(d3.interpolateRdBu)
         .domain([this.max_abs,0,this.max_abs*-1])
@@ -284,14 +287,15 @@ class Sequence{
 
 
 
-        console.log(values)
         const that = this
         
-        if(selection){ //Extent will be null on reset
+        if(selection){ //Selection will be null on reset
             this.FILTERING = true
             this.highlighted = highlighted
             this.heat_svg
             .selectAll("rect")
+            .transition()
+            .duration(this.TRANSITION_TIME)
             .style("opacity", function(d){
                 let pos_mut = d.pos + d.mut
                 if (highlighted.includes(pos_mut)){
@@ -327,8 +331,30 @@ class Sequence{
             //Later just reset it to the current settings!
             this.FILTERING = false
             this.filter_values = []
-            this.clear()
-            this.drawHeatMap()
+            // this.clear()
+            // this.drawHeatMap()
+
+            this.heat_svg
+            .selectAll("rect")
+            .transition()
+            .duration(this.TRANSITION_TIME)
+            .style("opacity", function(){
+                if (that.cell_type == "circles"){
+                    return(0)
+                } else{
+                    return(1)
+                }
+            })
+            .style("fill", function(d){
+                if (!isNaN(+d.value)){
+                    return (that.color_scale(d.value))
+                }
+                else{
+                    return("darkgrey")
+                }
+            })
+            .style("stroke", "none")
+
         }
     }
 
@@ -341,26 +367,38 @@ class Sequence{
         if (this.selected_condition && this.selected_condition!= "Select A Condition"){
             this.legend.clear()
             this.legend.drawLegend()
+ 
+
+            if (this.legend.frequency_drawn){
+                this.legend.addFrequencyLegend()
+            }
             this.HEAT_DRAWN = true
             const that = this
+
 
             this.heat_width = document.getElementById('heat-sticky-div').getBoundingClientRect().width 
             let bar_width = document.getElementById('heat-sticky-div').getBoundingClientRect().width 
             this.max_radius = Math.floor(this.heat_width/this.mutants.length)/2
             let cur_svg_height = this.max_radius*this.n_positions*2
-         
+
             this.heat_sticky_svg = this.heat_sticky_div.append("svg")
                 .attr('id', 'sticky_heat_svg')
                 .attr("width", "100%")
                 .attr("height", "100%")
                 .style("background", "white")
                 .style("opacity", .9)
+                // .style("float", "left")
+
+
 
             this.bar_sticky_svg = this.bar_sticky_div.append("svg")
                 .attr('id', 'sticky_bar_svg')
                 .attr("width", "100%")
                 .attr("height", "100%")
                 .style("background", "white")
+                // .style("float", "right")
+
+
 
             this.heat_svg = this.scroll_div.append("svg")
                 .attr('id', 'heat_svg')
@@ -369,11 +407,14 @@ class Sequence{
                 .style("display", "flex")
                 .style("float", "left")
 
+
             this.bar_svg = this.scroll_div.append("svg")
                 .attr("id", "bar_svg")
                 .attr('width', `${100 - this.HEAT_PERCENT}%`)
                 .attr('height', cur_svg_height + this.MARGINS.top + this.MARGINS.bottom)
                 .style("display", "flex")
+
+
 
 
             // // //Set up initial axis
@@ -386,9 +427,13 @@ class Sequence{
             .domain(this.rev_range(0,this.n_positions))
 
 
-            let r_scale = d3.scaleLinear()
-            .range([this.max_radius/4, this.max_radius])
-            .domain([0,this.max_abs])
+            // let r_scale = d3.scaleLinear()
+            // .range([this.max_radius/4, this.max_radius])
+            // .domain([0,this.max_abs])
+
+            this.r_scale = d3.scaleLog()
+            .range([this.max_radius/3, this.max_radius])
+            .domain([this.min_freq,this.max_freq])
 
 
              //Draw horizontal lines
@@ -398,14 +443,6 @@ class Sequence{
              .append("line")
              .attr("y1", function(d) {return(that.y_scale(d)+that.max_radius)})
              .attr("y2", function(d) {return(that.y_scale(d)+that.max_radius)})
-             .transition() 
-             .duration(function(){
-                if (that.FIRST_TIME_DRAWING){
-                    return(that.TRANSITION_TIME)
-                }
-                else{
-                    return(0)
-                }})
              .attr("x2", 0)
              .attr("x1", this.heat_width - this.max_radius)
              .style("stroke", function(d){
@@ -440,14 +477,6 @@ class Sequence{
              .append("line")
              .attr("x1", function(d) {return(that.x_scale(d)+that.max_radius)})
              .attr("x2", function(d) {return(that.x_scale(d)+that.max_radius)})
-             .transition() 
-             .duration(function(){
-                if (that.FIRST_TIME_DRAWING){
-                    return(that.TRANSITION_TIME*3)
-                }
-                else{
-                    return(0)
-                }})
              .attr("y2", 0 + this.max_radius)
              .attr("y1", cur_svg_height - this.max_radius)
              .style("stroke", "lightgrey")
@@ -479,8 +508,18 @@ class Sequence{
                 else{
                     return(0)
                 }})
-            .attr("r", function(d){return (r_scale(Math.abs(d.value)))})
-            .style("fill", function(d){return (that.color_scale(d.value))})
+            //.attr("r", function(d){return (r_scale(Math.abs(d.value)))})
+            .attr("r", function(d){return (that.r_scale(d.freq))})
+            .style("fill",function(d){
+                if (!isNaN(+d.value)){
+                    return (that.color_scale(d.value))
+                }
+                else{
+                    return("darkgrey")
+                }
+                })
+            .style("stroke", "darkgrey")
+            .style("stroke-width", .4)
           
 
             //Draw rectangles
@@ -488,28 +527,7 @@ class Sequence{
             .data(this.filtered_data)
             .enter()
             .append("rect")
-            .attr("x", function(d) { return (that.x_scale(d.mut) - that.max_radius)  })
-            .attr("y", function(d) { return (that.y_scale(d.pos) - that.max_radius) })   
-            .attr("width", this.max_radius*2)
-            .attr("height", this.max_radius*2)  
-            .style("fill", function(d){
-                if (!isNaN(+d.value)){
-                    return (that.color_scale(d.value))
-                }
-                else{
-                    return("lightgrey")
-                }
-                })
-            .style("opacity", function(){
-                if (that.cell_type == "squares"){
-                    return(1)
-                }
-                else{
-                    return(0)
-                }
-            })
             .on("mouseover", function(event,d){
-
                 d3.select(".tooltip")
                 .style("opacity",1)
                 if (!that.FILTERING){
@@ -522,19 +540,15 @@ class Sequence{
                 
             })
             .on("mousemove", function(event,d){
-                // if (!that.FILTERING){
-
                 d3.select(".tooltip")
-                  .html("Val: " + truncateDecimals(+d.value,3) + "<br>Position: " + d.pos + "<br>WT: " + d.wt + "<br> Mutation: "+ d.mut)
-                  .style("left", `${event.pageX - 100}px`)
+                  .html("Val: " + truncateDecimals(+d.value,3) + "<br>Position: " + d.pos + "<br>WT: " + d.wt + "<br> Mutation: "+ d.mut + "<br> Gnomad Frequeny: " + (+(+d.freq).toPrecision(2)).toExponential())
+                  .style("left", `${event.pageX - 180}px`)
                   .style("top", `${event.pageY - 30}px`)
-                // }
             })
             .on("mouseleave", function(event,d){
 
                 d3.select(".tooltip")
                 .style("opacity", 0)
-
                 if (!that.FILTERING){
                     d3.select(this)
                     .style("opacity", function(){
@@ -548,6 +562,37 @@ class Sequence{
                         .style("stroke", "none")
                 }
             })
+            .style("opacity", 0.0)
+            .attr("x", function(d) { return (that.x_scale(d.mut) - that.max_radius)  })
+            .attr("y", function(d) { return (that.y_scale(d.pos) - that.max_radius) })   
+            .attr("width", this.max_radius*2)
+            .attr("height", this.max_radius*2)  
+            .style("fill", function(d){
+                if (!isNaN(+d.value)){
+                    return (that.color_scale(d.value))
+                }
+                else{
+                    return("darkgrey")
+                }
+                })
+
+            .transition() 
+            .duration(function(){
+                if (that.FIRST_TIME_DRAWING){
+                    return(that.TRANSITION_TIME)
+                }
+                else{
+                    return(0)
+                }})
+            .style("opacity", function(){
+                if (that.cell_type == "squares"){
+                    return(1)
+                }
+                else{
+                    return(0)
+                }
+            })
+            
            
             
             this.draw_group_boxes()

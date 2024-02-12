@@ -34,6 +34,8 @@
                     <select id="condition_2_select" class="third-interaction">
                         <option value="Select Second Condition">Select Second Condition</option>
                     </select>
+                    <button type="button" id="scatter_frequency_button"class="fourth-interaction">Show Frequencies</button>
+
                 </div>
 
                 <div id="snake-div">
@@ -43,6 +45,8 @@
 
             <div id="sequence-legend-div-wrapper">
                 <div id="sequence-legend-div-labels">
+                    
+
                     <label for="sort_select", id="sort_select_label">Sort Amino Acids</label><br>
                     <select id="sort_select" class="third-interaction">
                         <option value="properties">Properties</option>
@@ -52,11 +56,9 @@
                         <option value="donor_acceptor">H-bonding</option>
                         <option value="polarity">Polarity</option>
                     </select>
-                    <label for="heat_select", id="heat_select_label">Heat Map Cell Type</label><br>
-                    <select id="heat_select" class="third-interaction">
-                        <option value="circles">circles</option>
-                        <option value="squares">squares</option>             
-                    </select>
+
+                    <button type="button" id="heat_frequency_button"class="third-interaction">Show Frequencies</button>
+
                 </div>
                 <div id="sequence-legend-div"> 
                 </div>
@@ -81,8 +83,6 @@
 <script src="dms/js/sequence_legend.js"></script>
 <script src="dms/js/head.js"></script>
 <script src="dms/js/scatter.js"></script>
-
-
 <script src="dms/js/utils.js"></script>
 
 

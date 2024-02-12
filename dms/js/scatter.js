@@ -8,8 +8,12 @@ class Scatter{
         this.DEFAULT_OPACITY = .2
         this.DEFAULT_RADIUS = 2
         this.SCATTER_COLOR = "green"
+        this.TRANSITION_TIME = 1000
+        this.TRANSITION_TIME_LEGEND = 500
 
-        this.MARGINS = { top: 15, left: 60, right: 10, bottom: 40 }
+
+
+        this.MARGINS = { top: 15, left: 110, right: 10, bottom: 40 }
         this.scatter_svg = this.scatter_div.append("svg")
                 .attr('id', 'scatter_svg')
                 .attr('width', "100%")
@@ -17,6 +21,11 @@ class Scatter{
                 .style("display", "flex")
                 .style("float", "left")
         this.second_condition = "Select Second Condition"
+        this.show_frequencies = false
+        this.first_time_drawing_scatter = true
+        this.first_time_drawing_legend = true
+
+
 
         const that = this
 
@@ -31,6 +40,34 @@ class Scatter{
             timeOutFunctionId = setTimeout(that.resize(), 500);
         });
     }
+
+    changeCircles(showFrequency){
+
+
+
+        const that = this
+        this.show_frequencies = showFrequency
+        this.points
+        .selectAll("circle")
+        .transition()
+        .duration(300)
+        .attr("r", function(d) { 
+            if (that.show_frequencies){
+                return (that.sequence.r_scale(d.freq) )
+            }
+            else{
+                return(that.DEFAULT_RADIUS)
+            }
+        })
+
+
+        this.points.call(this.brush.move, null);
+
+
+
+    }
+
+    
 
     setSecondConditionOptions(condition1){
         let condition2_select = document.getElementById("condition_2_select");
@@ -92,11 +129,10 @@ class Scatter{
             let mut = item.mut
             let pos = item.pos
             let val = item.value
+            let freq = item.freq
             let wt = item.wt
-            // let condition = item.condition
-
             const key = pos + '_' + mut;
-            map.set(key, { [`${condition1}`]:val, wt:wt, pos:pos, mut:mut });
+            map.set(key, { [`${condition1}`]:val, wt:wt, pos:pos, mut:mut, freq:freq});
 
         }
 
@@ -132,10 +168,7 @@ class Scatter{
         this.second_condition = second_condition
         this.clear()
 
-        console.log("I'm in draw scatter")
-
         if (second_condition != "Select Second Condition"){
-            console.log("I'm in the if")
             let total_height = document.getElementById('scatter-div').getBoundingClientRect().height
             let total_width = document.getElementById('scatter-div').getBoundingClientRect().width
 
@@ -204,22 +237,44 @@ class Scatter{
 
 
             // Add points
-            let points = this.scatter_svg.append("g")
-            points.selectAll()
+            this.points = this.scatter_svg.append("g")
+            this.points.selectAll()
                 .data(joined)
                 .enter()
                 .append("circle")
-                .attr("cy", function(d) { return (y_scale(d[that.sequence.selected_condition])) })
+                .attr("cy", function(d) { return(y_scale(d[that.sequence.selected_condition]))})
                 .attr("cx", function(d) { return (x_scale(d[second_condition])) })
-                .attr("r", this.DEFAULT_RADIUS)
                 .style("fill", this.SCATTER_COLOR)
                 .style("opacity", this.DEFAULT_OPACITY)
+                .style("pointer-events", function(d){
+                    if (d.freq){
+                        return("all")
+                    } else{
+                        return("none")
+                    }
+                })
+                .transition()
+                .duration(function(){
+                    if(that.first_time_drawing_scatter){
+                        return(that.TRANSITION_TIME)
+                    }else{
+                        return(0)
+                }})
+                .attr("r", function(d) { 
+                    if (that.show_frequencies){
+                        return (that.sequence.r_scale(d.freq))
+                    }
+                    else{
+                        return(that.DEFAULT_RADIUS)
+                    }
+                })
+
                 
 
             //Add X label
             this.scatter_svg.append("text")
                 .attr("text-anchor", "middle")
-                .attr("x", (total_width - this.MARGINS.left - this.MARGINS.right)/2)
+                .attr("x", (total_width - this.MARGINS.right - this.MARGINS.left )/2 +   this.MARGINS.left)
                 .attr("y", total_height-5)
                 .text(`${second_condition} Effect Size`)
                 .style("font-family", "monospace")
@@ -231,47 +286,49 @@ class Scatter{
                 .attr("text-anchor", "middle")
                 .text(`${this.sequence.selected_condition} Effect Size`)
                 .style("font-family", "monospace")
-                .attr("transform", `translate(20,${(total_height - this.MARGINS.top - this.MARGINS.bottom)/2})rotate(-90)`)
+                .attr("transform", `translate(${this.MARGINS.left -40},${(total_height - this.MARGINS.top - this.MARGINS.bottom)/2})rotate(-90)`)
                 .style("cursor", "help")
 
+            
+            this.brush = d3.brush()
 
-            points.call(d3.brush().on("end", ({selection}) => {
+
+            this.points.call(this.brush.on("end", ({selection}) => {
                 let value = [];
                 console.log("selection", selection)
                 if (selection) {
                     const [[x0, y0], [x1, y1]] = selection;
-                    value = points.selectAll("circle")
+                    value = that.points.selectAll("circle")
                     .style("fill", "gray")
                     .style("opacity", this.DEFAULT_OPACITY)
                     .filter(d => x0 <= x_scale(d[second_condition]) && x_scale(d[second_condition]) < x1
                             && y0 <= y_scale(d[that.sequence.selected_condition]) && y_scale(d[that.sequence.selected_condition]) < y1)
+                    .filter(function(d){
+                        if(that.show_frequencies){
+                            return(!isNaN(d.freq))
+                        }
+                        else{
+                            return(d)
+                        }
+                    })
+                        
                     .style("fill", that.SCATTER_COLOR)
                     .style("opacity", 1)
                     .data();
 
-                    console.log("value", value)
                 } else {
-                    points.selectAll("circle").style("fill", that.SCATTER_COLOR).style("opacity", this.DEFAULT_OPACITY)
+                    that.points.selectAll("circle").style("fill", that.SCATTER_COLOR).style("opacity", this.DEFAULT_OPACITY)
 
                 }
 
                 that.sequence.filterHeatMap(value, selection)
 
-                // this.scatter_svg.property("value", value).dispatch("input");
                 }));
+                this.first_time_drawing_scatter = false
 
-
-
-
-
-
-
-          
-
-
-
-
-
+                if (this.show_frequencies){
+                    this.drawFrequencyLegend()
+                }
 
         }
 
@@ -279,19 +336,64 @@ class Scatter{
             this.clear()
         }
 
+    }
 
-        
+    drawFrequencyLegend(){
+        //Get all the scientific notations for the the frequencies
+        //Gets all the lowest rounded frequencies
+        const that = this
+        this.show_frequencies = true
+        let positions = [...new Set(this.sequence.all_data.map((item) =>(+(+item.freq).toPrecision(1)).toExponential() ))];   
+        positions = positions.filter(function(d){return d != "NaN"})
+        positions = [...new Set(positions.map((item) => "1"+item.substr(1)))]
+        positions = positions.map((item) => (+item).toExponential())
+        positions.sort()
 
+        var n = 1
+        positions.forEach((freq) => {
+            n+=1
 
+            this.scatter_svg.append("circle")
+            .attr("class", "freq-legend")
+            .attr("cx", 40)
+            .attr("cy", this.MARGINS.top + (this.sequence.max_radius * 2 * n))
+            .transition()
+            .duration(function(){
+                if (that.first_time_drawing_legend){
+                    return(that.TRANSITION_TIME_LEGEND)
+                }
+                else{
+                    return(0)
+                }
+            })            
+            .attr("r", this.sequence.r_scale(+freq))
+            .style("fill", "darkgrey")
 
+            this.scatter_svg.append("text")
+            .attr("class", "freq-legend")
+            .attr("x", 5)
+            .attr("y", this.MARGINS.top + (this.sequence.max_radius * 2 * n) + this.sequence.max_radius/2)
+            .transition()
+            .duration(function(){
+                if (that.first_time_drawing_legend){
+                    return(that.TRANSITION_TIME_LEGEND)
+                }
+                else{
+                    return(0)
+                }
+            })
+            .text(positions[n-2])
+            .style("font-family", "monospace")
+            .attr("text-anchor", "left")
+            .style("font-size",`${this.sequence.max_radius * 1.4}px`)
+        });
+        this.first_time_drawing = false
+    }
 
-
-
-
-        
-
-
-
+    clearFrequencyLegend(){
+        this.scatter_svg.selectAll(".freq-legend")
+       .remove()
+       this.first_time_drawing = true
     }
 
    
