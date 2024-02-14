@@ -24,6 +24,7 @@ Promise.all([all_data]).then( data =>
 
         let head = new Head(proteins, sequence, sequence_legend, scatter)
         sequence.setLegend(sequence_legend)
+        sequence.setScatter(scatter)
 
 
 

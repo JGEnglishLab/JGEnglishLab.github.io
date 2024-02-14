@@ -256,6 +256,8 @@ by(metaData, seq_len(nrow(metaData)), function(row) {
         right_join(score, by = "pos")  %>% 
         select(-wt.y) %>%
         rename(wt = wt.x) -> score
+      
+      score %>% mutate(t = gsub("x\\d+", "", BW)) -> score
     }else{
       score$BW = NULL
       score$protein_segment = NULL

@@ -22,6 +22,7 @@ class Scatter{
                 .style("float", "left")
         this.second_condition = "Select Second Condition"
         this.show_frequencies = false
+        this.show_scatter = false
         this.first_time_drawing_scatter = true
         this.first_time_drawing_legend = true
 
@@ -42,15 +43,10 @@ class Scatter{
     }
 
     changeCircles(showFrequency){
-
-
-
         const that = this
         this.show_frequencies = showFrequency
         this.points
-        .selectAll("circle")
-        .transition()
-        .duration(300)
+        .selectAll(".scatter-circle")
         .attr("r", function(d) { 
             if (that.show_frequencies){
                 return (that.sequence.r_scale(d.freq) )
@@ -59,12 +55,7 @@ class Scatter{
                 return(that.DEFAULT_RADIUS)
             }
         })
-
-
         this.points.call(this.brush.move, null);
-
-
-
     }
 
     
@@ -112,6 +103,39 @@ class Scatter{
 
     clear(){  
         this.scatter_svg.selectAll("*").remove();
+    }
+
+    heatMousover(point){
+        if(this.show_scatter){
+            let clicked_point = this.joined_data.filter(function(d){return (d.pos == point.pos && d.mut == point.mut)})
+             if (clicked_point.length !== 0){
+                this.points
+                .select("#clicked-point")
+                .transition()
+                .duration(200)
+                .attr("id", "clicked-point")
+                .attr("cy", this.y_scale(clicked_point[0][this.sequence.selected_condition]))
+                .attr("cx",  this.x_scale(clicked_point[0][this.second_condition]))
+                .attr("r", 4)
+                .style("fill", "black")
+            }
+            else{
+                this.points
+                .select("#clicked-point")
+                .transition()
+                .duration(200)
+                .attr("r", 0)
+            }
+        }
+    }
+    heatMouseleave(){
+        if (this.show_scatter){
+            this.points
+                .select("#clicked-point")
+                .transition()
+                .duration(200)
+                .attr("r", 0)
+        }
     }
 
     joinConditionArrays(arr1, arr2) {
@@ -165,13 +189,17 @@ class Scatter{
     }
 
     drawScatter(second_condition = "Select Second Condition"){
+        
         this.second_condition = second_condition
+        this.show_scatter  = true
         this.clear()
+
+
 
         if (second_condition != "Select Second Condition"){
             let total_height = document.getElementById('scatter-div').getBoundingClientRect().height
             let total_width = document.getElementById('scatter-div').getBoundingClientRect().width
-
+            
             let condition1_data = this.sequence.filtered_data
             condition1_data = condition1_data.filter(function(d){return !isNaN(d.value)})
 
@@ -184,35 +212,29 @@ class Scatter{
             let condition2_max = d3.max(condition2_data.map(d => +d.value))
             let condition2_min = d3.min(condition2_data.map(d => +d.value))
 
-            let x_scale = d3.scaleLinear()
+            this.x_scale = d3.scaleLinear()
                   .domain([condition2_min - this.SCATTER_BUFFER, condition2_max + this.SCATTER_BUFFER])
                   .range([this.MARGINS.left, total_width - this.MARGINS.right]);
             var x_axis = d3.axisBottom()
-                        .scale(x_scale);
+                        .scale(this.x_scale);
             this.scatter_svg.append("g")
                 .call(x_axis)
                 .attr("transform", `translate(0,${total_height-this.MARGINS.bottom})`)
                 .style("font-family", "monospace")
 
 
-            let y_scale = d3.scaleLinear()
+            this.y_scale = d3.scaleLinear()
             .domain([ condition1_max+this.SCATTER_BUFFER, condition1_min-this.SCATTER_BUFFER])
 
             .range([this.MARGINS.top, total_height - this.MARGINS.bottom]);
             var y_axis = d3.axisLeft()
-                        .scale(y_scale);
+                        .scale(this.y_scale);
             this.scatter_svg.append("g")
                 .call(y_axis)
                 .attr("transform", `translate(${this.MARGINS.left},0)`)
-                .style("font-family", "monospace")
-
-
-
-
+                .style("font-family", "monospace") 
             
-            
-            
-            const joined = this.joinConditionArrays(condition1_data, condition2_data);
+            this.joined_data = this.joinConditionArrays(condition1_data, condition2_data);
             const that = this
 
 
@@ -221,8 +243,8 @@ class Scatter{
             this.scatter_svg.append("line")
             .attr("x1", this.MARGINS.left)
             .attr("x2", total_width - this.MARGINS.right)
-            .attr("y1", y_scale(0))
-            .attr("y2", y_scale(0))
+            .attr("y1", this.y_scale(0))
+            .attr("y2", this.y_scale(0))
             .style("stroke", "lightgrey")
             .style("stroke-width", 1)
 
@@ -230,8 +252,8 @@ class Scatter{
             this.scatter_svg.append("line")
             .attr("y1", this.MARGINS.top)
             .attr("y2", total_height - this.MARGINS.bottom)
-            .attr("x1", x_scale(0))
-            .attr("x2", x_scale(0))
+            .attr("x1", this.x_scale(0))
+            .attr("x2", this.x_scale(0))
             .style("stroke", "lightgrey")
             .style("stroke-width", 1)
 
@@ -239,11 +261,12 @@ class Scatter{
             // Add points
             this.points = this.scatter_svg.append("g")
             this.points.selectAll()
-                .data(joined)
+                .data(this.joined_data)
                 .enter()
                 .append("circle")
-                .attr("cy", function(d) { return(y_scale(d[that.sequence.selected_condition]))})
-                .attr("cx", function(d) { return (x_scale(d[second_condition])) })
+                .attr("class", "scatter-circle")
+                .attr("cy", function(d) { return(that.y_scale(d[that.sequence.selected_condition]))})
+                .attr("cx", function(d) { return (that.x_scale(d[second_condition])) })
                 .style("fill", this.SCATTER_COLOR)
                 .style("opacity", this.DEFAULT_OPACITY)
                 .style("pointer-events", function(d){
@@ -268,6 +291,10 @@ class Scatter{
                         return(that.DEFAULT_RADIUS)
                     }
                 })
+            
+            this.points
+                .append("circle")
+                .attr("id", "clicked-point")
 
                 
 
@@ -291,18 +318,16 @@ class Scatter{
 
             
             this.brush = d3.brush()
-
-
             this.points.call(this.brush.on("end", ({selection}) => {
                 let value = [];
                 console.log("selection", selection)
                 if (selection) {
                     const [[x0, y0], [x1, y1]] = selection;
-                    value = that.points.selectAll("circle")
+                    value = that.points.selectAll(".scatter-circle")
                     .style("fill", "gray")
                     .style("opacity", this.DEFAULT_OPACITY)
-                    .filter(d => x0 <= x_scale(d[second_condition]) && x_scale(d[second_condition]) < x1
-                            && y0 <= y_scale(d[that.sequence.selected_condition]) && y_scale(d[that.sequence.selected_condition]) < y1)
+                    .filter(d => x0 <= this.x_scale(d[second_condition]) && this.x_scale(d[second_condition]) < x1
+                            && y0 <= this.y_scale(d[that.sequence.selected_condition]) && this.y_scale(d[that.sequence.selected_condition]) < y1)
                     .filter(function(d){
                         if(that.show_frequencies){
                             return(!isNaN(d.freq))
@@ -317,7 +342,7 @@ class Scatter{
                     .data();
 
                 } else {
-                    that.points.selectAll("circle").style("fill", that.SCATTER_COLOR).style("opacity", this.DEFAULT_OPACITY)
+                    that.points.selectAll(".scatter-circle").style("fill", that.SCATTER_COLOR).style("opacity", this.DEFAULT_OPACITY)
 
                 }
 
@@ -333,6 +358,7 @@ class Scatter{
         }
 
         else{
+            this.show_scatter=false
             this.clear()
         }
 

@@ -266,6 +266,10 @@ class Sequence{
         this.legend = legend
     }
 
+    setScatter(scatter){
+        this.scatter = scatter
+    }
+
     setCondition(selected_condition){
         this.FIRST_TIME_DRAWING = true
         this.selected_condition = selected_condition
@@ -394,7 +398,7 @@ class Sequence{
 
 
             this.heat_width = document.getElementById('heat-sticky-div').getBoundingClientRect().width 
-            let bar_width = document.getElementById('heat-sticky-div').getBoundingClientRect().width 
+            this.bar_width = document.getElementById('bar-sticky-div').getBoundingClientRect().width 
             this.max_radius = Math.floor(this.heat_width/this.mutants.length)/2
             let cur_svg_height = this.max_radius*this.n_positions*2
 
@@ -545,13 +549,14 @@ class Sequence{
             .enter()
             .append("rect")
             .on("mouseover", function(event,d){
+                that.scatter.heatMousover(d)
                 d3.select(".tooltip")
                 .style("opacity",1)
                 if (!that.FILTERING){
                     d3.select(this)
                         .style("opacity", .5)
                         .style("stroke", "black")
-                        .style("stroke-width", 2)
+                        .style("stroke-width", .5)
                         .style("stroke-opacity", 1)
                 }
                 
@@ -563,6 +568,7 @@ class Sequence{
                   .style("top", `${event.pageY - 30}px`)
             })
             .on("mouseleave", function(event,d){
+                that.scatter.heatMouseleave()
 
                 d3.select(".tooltip")
                 .style("opacity", 0)
@@ -579,6 +585,7 @@ class Sequence{
                         .style("stroke", "none")
                 }
             })
+
             .style("opacity", 0.0)
             .attr("x", function(d) { return (that.x_scale(d.mut) - that.max_radius)  })
             .attr("y", function(d) { return (that.y_scale(d.pos) - that.max_radius) })   
@@ -625,10 +632,10 @@ class Sequence{
             .attr("y", function(d){return(that.y_scale(d) + that.max_radius/4)})
             .attr("font-size", function(d){
                 if (d%5 ==0){
-                    return( `${(bar_width)*.025}px`)
+                    return( `${(that.heat_width )*.025}px`)
                 }
                 else{
-                    return( `${(bar_width)*.015}px`)
+                    return( `${(that.heat_width )*.015}px`)
                 }
                 }
                 )
@@ -690,11 +697,23 @@ class Sequence{
                 .style("opacity", .3)
             })
 
+            console.log("this.bar_width", this.bar_width)
 
-           
+            //Label region bars
+            this.bar_svg.selectAll()
+            .data(this.domain_data)
+            .enter()
+            .append("text")
+            .attr("x", this.bar_width/2)
+            .attr("y", function(d){
+                return(that.y_scale(String(d.start_pos)) + that.max_radius )
+            })
+            .html(function(d){return(d.domain)})
+            .style("font-family", "monospace")
+            .style("text-anchor", "middle")
+
             this.NEW_GROUPING = false
             this.FIRST_TIME_DRAWING = false
-
         }
         }     
     }

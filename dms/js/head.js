@@ -85,9 +85,14 @@ class Head{
           var selected_condition = d3.select(this).property("value")
           if (selected_condition == "Select Second Condition"){
             d3.selectAll(".fourth-interaction").style("opacity", ".5").style("pointer-events", "none")
+            sequence.heat_svg.selectAll("rect").style("cursor", "default")
+
           }
           else{
             d3.selectAll(".fourth-interaction").style("opacity", "1").style("pointer-events", "all")
+            sequence.heat_svg.selectAll("rect").style("cursor", "pointer")
+
+
           }
           scatter.first_time_drawing_scatter = true
           scatter.drawScatter(selected_condition)
