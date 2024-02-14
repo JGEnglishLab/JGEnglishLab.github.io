@@ -44,6 +44,7 @@ class Sequence{
 
 
 
+
         var timeOutFunctionId; 
         window.addEventListener("resize", function(){
             // fired after we are done resizing 
@@ -242,7 +243,23 @@ class Sequence{
     // Returns the conditions corresponding to that protein
     setProtein(selected_protein){
         this.protein_data = this.all_data.filter(function(d){return d.protein == selected_protein})
+        this.getRegions()
+
         return([...new Set(this.protein_data.map((item) => item.condition))])
+
+    }
+
+    getRegions(){
+        let domains = [...new Set(this.protein_data.map((item) => item.protein_segment))];
+        this.domain_data = []
+        domains.forEach((domain) => {
+            let cur_domain = this.protein_data.filter(function(d){return d.protein_segment == domain})
+            let max_position = d3.max(cur_domain.map(d => +d.pos))
+            let min_position = d3.min(cur_domain.map(d => +d.pos))
+            let cur_domain_data = {"domain": domain, "start_pos": min_position, "stop_pos": max_position}
+            this.domain_data.push(cur_domain_data)
+        })
+        console.log("this.domain_data", this.domain_data)
     }
 
     setLegend(legend){
@@ -541,7 +558,7 @@ class Sequence{
             })
             .on("mousemove", function(event,d){
                 d3.select(".tooltip")
-                  .html("Val: " + truncateDecimals(+d.value,3) + "<br>Position: " + d.pos + "<br>WT: " + d.wt + "<br> Mutation: "+ d.mut + "<br> Gnomad Frequeny: " + (+(+d.freq).toPrecision(2)).toExponential())
+                  .html("Val: " + truncateDecimals(+d.value,3) + "<br>Position: " + d.pos + "<br>WT: " + d.wt + "<br> Mutation: "+ d.mut +"<br> BW Number: " + d.BW+ "<br> Gnomad Frequeny: " + (+(+d.freq).toPrecision(2)).toExponential())
                   .style("left", `${event.pageX - 180}px`)
                   .style("top", `${event.pageY - 30}px`)
             })
@@ -626,6 +643,52 @@ class Sequence{
             .style("text-anchor", "left")
             .style("font-family", "monospace")
             .text(function(d){return(d)})
+
+            //Draw region bars
+            this.bar_svg.selectAll()
+            .data(this.domain_data)
+            .enter()
+            .append("rect")
+            .attr("x", 0)
+            .attr("y", function(d){
+                return(that.y_scale(String(d.start_pos)) - that.max_radius)
+            })
+            .attr("width", 500)
+            .attr("height", function(d){
+                return(that.y_scale(String(d.stop_pos)) - that.y_scale(String(d.start_pos)) + that.max_radius*2)
+            })
+            .style("fill", function(d){
+                if(d.domain.startsWith("TM")){
+                    return("#ff0000")
+                } else if(d.domain.startsWith("ECL")){
+                    return("#0000ff")
+                } else if(d.domain.startsWith("ICL")){
+                    return("#87cefa")
+                } else if(d.domain.startsWith("H")){
+                    return("#00ff00")
+                } else{
+                    return("grey")
+                }
+            })
+            .style("opacity", .3)
+            .on("mouseover", function(event,d){
+                d3.select(".tooltip")
+                .style("opacity",1)
+                d3.select(this)
+                .style("opacity", .5)
+            })
+            .on("mousemove", function(event,d){
+                d3.select(".tooltip")
+                  .html(d.domain)
+                  .style("left", `${event.pageX - 40}px`)
+                  .style("top", `${event.pageY - 30}px`)
+            })
+            .on("mouseleave", function(event,d){
+                d3.select(".tooltip")
+                .style("opacity", 0)
+                d3.select(this)
+                .style("opacity", .3)
+            })
 
 
            
