@@ -2,6 +2,7 @@ library(tidyverse)
 library(dplyr)
 library(jsonlite)
 library(httr)
+library(MASS)
 
 acidLookup<-function(x){
   # For converting three letter amino acid code to single letter abbreviation
@@ -84,7 +85,7 @@ by(metaData, seq_len(nrow(metaData)), function(row) {
   df <- df[-1,]
   
   df %>% filter(value == "score") %>%
-    select(-value, -condition_value) %>%
+    dplyr::select(-value, -condition_value) %>%
     pivot_longer(cols = c(-condition)) -> score
   score %>% filter(name != "_wt") -> score
   
@@ -122,7 +123,7 @@ by(metaData, seq_len(nrow(metaData)), function(row) {
   #We have to manually add in the M because we never mutate 
   score %>% 
     arrange(as.numeric(pos)) %>% 
-    select(pos, wt) %>% 
+    dplyr::select(pos, wt) %>% 
     unique() -> ordered_wt
   sequence = paste0("M", paste0(ordered_wt$wt, collapse=""))
   
@@ -138,7 +139,7 @@ by(metaData, seq_len(nrow(metaData)), function(row) {
   
   tryCatch({
     gnomad = read_csv(paste0("gnomad/",cur_gnomad_file)) %>% 
-      select(`Protein Consequence`, `Allele Frequency`) %>% 
+      dplyr::select(`Protein Consequence`, `Allele Frequency`) %>% 
       rename(name = `Protein Consequence`,
              freq = `Allele Frequency`) -> gnomad
     
@@ -187,7 +188,7 @@ by(metaData, seq_len(nrow(metaData)), function(row) {
       mutate(mut = sapply(.$mut, FUN = acidLookup)) %>%
       mutate(wt = sapply(.$wt, FUN = acidLookup)) %>% 
       filter(pos != 1, wt != "ter")  %>% 
-      select(mut, pos, wt, freq)-> gnomad
+      dplyr::select(mut, pos, wt, freq)-> gnomad
     
     left_join(score, gnomad, relationship = "many-to-many") -> score
     
@@ -254,15 +255,29 @@ by(metaData, seq_len(nrow(metaData)), function(row) {
                BW = display_generic_number) %>%
         mutate(pos = as.character(pos)) %>%
         right_join(score, by = "pos")  %>% 
-        select(-wt.y) %>%
+        dplyr::select(-wt.y) %>%
         rename(wt = wt.x) -> score
       
-      score %>% mutate(t = gsub("x\\d+", "", BW)) -> score
+      score %>% mutate(BW = gsub("x\\d+", "", BW)) -> score
     }else{
       score$BW = NULL
       score$protein_segment = NULL
     }
   }
+  
+  score %>% 
+    filter(wt == mut & !is.na(value)) %>%
+    group_by(condition) %>%
+    summarise(syn_mean = mean(as.numeric(value)),
+              syn_sd = sd(as.numeric(value))) %>% 
+    right_join(score) -> score
+  
+  #This is how they do it.
+  #Seems identical to what I have above.
+  # fit <- fitdistr(
+  #   as.numeric((score %>% filter(wt == mut & !is.na(value) & condition == "dms_7") %>% dplyr::select(value))$value) ,
+  #   densfun = "normal"
+  # )
   
   
 
@@ -279,7 +294,7 @@ by(metaData, seq_len(nrow(metaData)), function(row) {
   }
   
   #Remove name column
-  score %>% select(-name) -> score
+  score %>% dplyr::select(-name) -> score
   
   final_df <<- rbind(final_df, score)
 

@@ -155,8 +155,11 @@ class Scatter{
             let val = item.value
             let freq = item.freq
             let wt = item.wt
+            let syn_sd = item.syn_sd
+            let syn_mean = item.syn_mean
+
             const key = pos + '_' + mut;
-            map.set(key, { [`${condition1}`]:val, wt:wt, pos:pos, mut:mut, freq:freq});
+            map.set(key, { [`${condition1}`]:val, wt:wt, pos:pos, mut:mut, freq:freq, [`${condition1}_syn_sd`]:syn_sd, [`${condition1}_syn_mean`]:syn_mean});
 
         }
 
@@ -166,12 +169,17 @@ class Scatter{
             let mut = item.mut
             let pos = item.pos
             let val = item.value
-            let wt = item.wt
+            let syn_sd = item.syn_sd
+            let syn_mean = item.syn_mean
 
             const key = pos + '_' + mut;
 
             if (map.has(key)) {
                 map.get(key)[`${condition2}`] = val;
+                map.get(key)[`${condition2}_syn_sd`] = syn_sd;
+                map.get(key)[`${condition2}_syn_mean`] = syn_mean;
+
+
             } 
             else{
                 map.delete(key)
@@ -237,26 +245,73 @@ class Scatter{
             this.joined_data = this.joinConditionArrays(condition1_data, condition2_data);
             const that = this
 
+            console.log(this.joined_data)
+
+            let second_condition_mean = +this.joined_data[0][`${second_condition}_syn_mean`]
+            let second_condition_sd = +this.joined_data[0][`${second_condition}_syn_sd`]
+            let first_condition_mean = +this.joined_data[0][`${this.sequence.selected_condition}_syn_mean`]
+            let first_condition_sd = +this.joined_data[0][`${this.sequence.selected_condition}_syn_sd`]
+
+            console.log("second_condition_mean", second_condition_mean)
+            console.log("second_condition_sd", second_condition_sd)
+            console.log("first_condition_mean", first_condition_mean)
+            console.log("first_condition_sd", first_condition_sd)
+            console.log("yo", first_condition_mean + first_condition_sd)
+            console.log("yoyo", first_condition_mean + first_condition_sd+first_condition_sd)
+
+            var lineMousover = (event,d) =>{
+                console.log("event", event)
+                console.log("d", d)
+            }
 
 
-            //Draw horizontal line
+
+            //Draw horizontal lines
             this.scatter_svg.append("line")
             .attr("x1", this.MARGINS.left)
             .attr("x2", total_width - this.MARGINS.right)
-            .attr("y1", this.y_scale(0))
-            .attr("y2", this.y_scale(0))
+            .attr("y1", this.y_scale(first_condition_mean))
+            .attr("y2", this.y_scale(first_condition_mean))
             .style("stroke", "lightgrey")
+            .style("stroke-width", .5)
+            this.scatter_svg.append("line")
+            .attr("x1", this.MARGINS.left)
+            .attr("x2", total_width - this.MARGINS.right)
+            .attr("y1", this.y_scale(first_condition_mean + first_condition_sd*2))
+            .attr("y2", this.y_scale(first_condition_mean  +first_condition_sd*2))
+            .style("stroke", "grey")
+            .style("stroke-width", 1)
+            this.scatter_svg.append("line")
+            .attr("x1", this.MARGINS.left)
+            .attr("x2", total_width - this.MARGINS.right)
+            .attr("y1", this.y_scale(first_condition_mean - first_condition_sd *2))
+            .attr("y2", this.y_scale(first_condition_mean  - first_condition_sd *2))
+            .style("stroke", "grey")
             .style("stroke-width", 1)
 
-            //Draw verticle line
+            //Draw verticle lines
             this.scatter_svg.append("line")
             .attr("y1", this.MARGINS.top)
             .attr("y2", total_height - this.MARGINS.bottom)
-            .attr("x1", this.x_scale(0))
-            .attr("x2", this.x_scale(0))
+            .attr("x1", this.x_scale(second_condition_mean))
+            .attr("x2", this.x_scale(second_condition_mean))
             .style("stroke", "lightgrey")
+            .style("stroke-width", .5)
+            this.scatter_svg.append("line")
+            .attr("y1", this.MARGINS.top)
+            .attr("y2", total_height - this.MARGINS.bottom)
+            .attr("x1", this.x_scale(second_condition_mean+ second_condition_sd*2))
+            .attr("x2", this.x_scale(second_condition_mean+second_condition_sd*2))
+            .style("stroke", "grey")
             .style("stroke-width", 1)
-
+            this.scatter_svg.append("line")
+            .attr("y1", this.MARGINS.top)
+            .attr("y2", total_height - this.MARGINS.bottom)
+            .attr("x1", this.x_scale(second_condition_mean-second_condition_sd*2))
+            .attr("x2", this.x_scale(second_condition_mean-second_condition_sd*2))
+            .style("stroke", "grey")
+            .style("stroke-width", 1)
+            
 
             // Add points
             this.points = this.scatter_svg.append("g")
@@ -295,7 +350,6 @@ class Scatter{
             this.points
                 .append("circle")
                 .attr("id", "clicked-point")
-
                 
 
             //Add X label

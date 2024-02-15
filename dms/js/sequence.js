@@ -12,7 +12,9 @@ class Sequence{
         this.RADIUS = 15
         this.HEAT_PERCENT = 70
         this.TRANSITION_TIME = 1000
-        this.RECT_OPACITY = .3
+        this.AA_RECT_OPACITY = .3
+        this.DEFAULT_DOMAIN_OPACITY = .3
+        this.HIGHLIGHTED_DOMAIN_OPACITY = .5
         
 
         //**********************************************************************************************
@@ -181,7 +183,7 @@ class Sequence{
                 d3.select(this)
                 .style("stroke", "none")
             })
-            .style("opacity", this.RECT_OPACITY)
+            .style("opacity", this.AA_RECT_OPACITY)
             .attr("x", function(d){
                 return(that.x_scale(d.start) - that.max_radius)})
             .attr("width", function(d){
@@ -660,7 +662,7 @@ class Sequence{
             .attr("y", function(d){
                 return(that.y_scale(String(d.start_pos)) - that.max_radius)
             })
-            .attr("width", 500)
+            .attr("width", "100%")
             .attr("height", function(d){
                 return(that.y_scale(String(d.stop_pos)) - that.y_scale(String(d.start_pos)) + that.max_radius*2)
             })
@@ -677,12 +679,12 @@ class Sequence{
                     return("grey")
                 }
             })
-            .style("opacity", .3)
+            .style("opacity", this.DEFAULT_DOMAIN_OPACITY)
             .on("mouseover", function(event,d){
                 d3.select(".tooltip")
                 .style("opacity",1)
                 d3.select(this)
-                .style("opacity", .5)
+                .style("opacity", that.HIGHLIGHTED_DOMAIN_OPACITY)
             })
             .on("mousemove", function(event,d){
                 d3.select(".tooltip")
@@ -694,7 +696,7 @@ class Sequence{
                 d3.select(".tooltip")
                 .style("opacity", 0)
                 d3.select(this)
-                .style("opacity", .3)
+                .style("opacity",  that.DEFAULT_DOMAIN_OPACITY)
             })
 
             console.log("this.bar_width", this.bar_width)
