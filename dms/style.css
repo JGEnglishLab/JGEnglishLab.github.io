@@ -47,19 +47,20 @@ html, body {
     position: sticky;
  }
  #scatter-div{
-    background-color: rgba(255, 255, 255);
+    background-color:  rgb(255, 255, 255);
     width: 100%;
     height: 50%;
  }
  #snake-div{
-    background-color: rgba(255, 255, 255);
+    background-color: rgb(255, 255, 255);
     width: 100%;
     height: 50%;
+    /* position: relative; */
  }
 
  #sequence-legend-div-wrapper{
     height: 100%;
-    background-color: rgba(181, 0, 0, 0.899);
+    background-color: rgba(255, 255, 255, 0.899);
     float:right;
     margin-right: 0px;
     margin-left: 0px;

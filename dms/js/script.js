@@ -21,10 +21,12 @@ Promise.all([all_data]).then( data =>
         let sequence = new Sequence(data[0])
         let sequence_legend = new SequenceLegend(data[0], sequence)
         let scatter = new Scatter(sequence)
+        let snake = new Snake(scatter)
 
-        let head = new Head(proteins, sequence, sequence_legend, scatter)
+        let head = new Head(proteins, sequence, sequence_legend, scatter, snake)
         sequence.setLegend(sequence_legend)
         sequence.setScatter(scatter)
+        sequence.setSnake(snake)
 
 
 

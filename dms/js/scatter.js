@@ -13,19 +13,13 @@ class Scatter{
 
 
 
-        this.MARGINS = { top: 15, left: 110, right: 10, bottom: 40 }
-        this.scatter_svg = this.scatter_div.append("svg")
-                .attr('id', 'scatter_svg')
-                .attr('width', "100%")
-                .attr('height', "100%")
-                .style("display", "flex")
-                .style("float", "left")
+        this.MARGINS = { top: 15, left: 110, right: 10, bottom: 60 }
         this.second_condition = "Select Second Condition"
         this.show_frequencies = false
         this.show_scatter = false
         this.first_time_drawing_scatter = true
         this.first_time_drawing_legend = true
-
+        this.brushed_points = []
 
 
         const that = this
@@ -75,9 +69,7 @@ class Scatter{
         if (condition1 != "Select A Condition"){
             let conditions = [...new Set(this.sequence.protein_data.map((item) => item.condition))]
             this.condition1 = this.sequence.selected_condition
-    
-            console.log("this.condition1", this.condition1)
-    
+        
             for (const condition of conditions){
                 if (condition !==condition1){
                     var option = document.createElement("option");
@@ -102,7 +94,52 @@ class Scatter{
     }
 
     clear(){  
-        this.scatter_svg.selectAll("*").remove();
+        if (this.show_scatter){
+            d3.select("#scatter_svg")
+            .remove()
+        }
+    }
+
+    snakeMouseover(pos){
+        const that = this
+        let map = new Map();
+        console.log("map", map)
+        this.sequence.grouping.forEach((g) => {
+            g.values.forEach((v) => {
+                map.set(v, g.color)
+            })
+        })
+        if (this.show_scatter){
+            this.points.selectAll(".scatter-circle")  
+            .attr("r", 6)  
+            .style("opacity", function(d){
+                
+                if(+d.pos === +pos && d.mut === d.wt){
+                    return(1)
+                } else if (+d.pos === +pos && d.mut !== d.wt){
+                    return(.6)
+                }
+                else{
+                    return(0)
+                }     
+            }).style("fill", function(d){
+                if (d.mut === d.wt){
+                    return("black")
+                } else{
+                    return(map.get(d.mut))
+                }
+            })
+        }
+    }
+
+    snakeMouseleave(){
+        
+        if (this.show_scatter){
+            this.points.selectAll(".scatter-circle")  
+            .attr("r", this.DEFAULT_RADIUS)  
+            .style("opacity", this.DEFAULT_OPACITY)
+            .style("fill", this.SCATTER_COLOR)
+        }
     }
 
     heatMousover(point){
@@ -202,7 +239,16 @@ class Scatter{
         this.show_scatter  = true
         this.clear()
 
+        let offset  = document.getElementById('condition_2_select').getBoundingClientRect().height 
+        let div_height  = document.getElementById('scatter-div').getBoundingClientRect().height 
+        this.svg_height = div_height - offset
 
+        this.scatter_svg = this.scatter_div.append("svg")
+        .attr('id', 'scatter_svg')
+        .attr('width', "100%")
+        .attr('height', this.svg_height)
+        .style("display", "flex")
+        .style("float", "left")
 
         if (second_condition != "Select Second Condition"){
             let total_height = document.getElementById('scatter-div').getBoundingClientRect().height
@@ -241,28 +287,16 @@ class Scatter{
                 .call(y_axis)
                 .attr("transform", `translate(${this.MARGINS.left},0)`)
                 .style("font-family", "monospace") 
+                
             
             this.joined_data = this.joinConditionArrays(condition1_data, condition2_data);
             const that = this
 
-            console.log(this.joined_data)
 
             let second_condition_mean = +this.joined_data[0][`${second_condition}_syn_mean`]
             let second_condition_sd = +this.joined_data[0][`${second_condition}_syn_sd`]
             let first_condition_mean = +this.joined_data[0][`${this.sequence.selected_condition}_syn_mean`]
             let first_condition_sd = +this.joined_data[0][`${this.sequence.selected_condition}_syn_sd`]
-
-            console.log("second_condition_mean", second_condition_mean)
-            console.log("second_condition_sd", second_condition_sd)
-            console.log("first_condition_mean", first_condition_mean)
-            console.log("first_condition_sd", first_condition_sd)
-            console.log("yo", first_condition_mean + first_condition_sd)
-            console.log("yoyo", first_condition_mean + first_condition_sd+first_condition_sd)
-
-            var lineMousover = (event,d) =>{
-                console.log("event", event)
-                console.log("d", d)
-            }
 
 
 
@@ -311,7 +345,7 @@ class Scatter{
             .attr("x2", this.x_scale(second_condition_mean-second_condition_sd*2))
             .style("stroke", "grey")
             .style("stroke-width", 1)
-            
+
 
             // Add points
             this.points = this.scatter_svg.append("g")
@@ -354,13 +388,11 @@ class Scatter{
 
             //Add X label
             this.scatter_svg.append("text")
-                .attr("text-anchor", "middle")
                 .attr("x", (total_width - this.MARGINS.right - this.MARGINS.left )/2 +   this.MARGINS.left)
-                .attr("y", total_height-5)
+                .attr("y", this.svg_height -5 )
                 .text(`${second_condition} Effect Size`)
                 .style("font-family", "monospace")
                 .style("cursor", "help")
-
 
             //Add Y label
             this.scatter_svg.append("text")
@@ -373,11 +405,10 @@ class Scatter{
             
             this.brush = d3.brush()
             this.points.call(this.brush.on("end", ({selection}) => {
-                let value = [];
-                console.log("selection", selection)
+                that.brushed_points = [];
                 if (selection) {
                     const [[x0, y0], [x1, y1]] = selection;
-                    value = that.points.selectAll(".scatter-circle")
+                    that.brushed_points = that.points.selectAll(".scatter-circle")
                     .style("fill", "gray")
                     .style("opacity", this.DEFAULT_OPACITY)
                     .filter(d => x0 <= this.x_scale(d[second_condition]) && this.x_scale(d[second_condition]) < x1
@@ -399,8 +430,7 @@ class Scatter{
                     that.points.selectAll(".scatter-circle").style("fill", that.SCATTER_COLOR).style("opacity", this.DEFAULT_OPACITY)
 
                 }
-
-                that.sequence.filterHeatMap(value, selection)
+                that.sequence.filterHeatMap(that.brushed_points, selection)
 
                 }));
                 this.first_time_drawing_scatter = false
@@ -435,7 +465,7 @@ class Scatter{
 
             this.scatter_svg.append("circle")
             .attr("class", "freq-legend")
-            .attr("cx", 40)
+            .attr("cx", 40 + this.sequence.max_radius)
             .attr("cy", this.MARGINS.top + (this.sequence.max_radius * 2 * n))
             .transition()
             .duration(function(){

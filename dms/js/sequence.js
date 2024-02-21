@@ -32,6 +32,8 @@ class Sequence{
         this.positions = [...new Set(this.all_data.map((item) => item.pos))];   
         this.mutants = [...new Set(this.all_data.map((item) => item.mut))]; 
 
+
+
         this.selected_condition = null 
         this.selected_protein = null
         this.HEAT_DRAWN = false
@@ -40,7 +42,7 @@ class Sequence{
         this.FILTERING = false
         this.highlighted = []
         this.sorting = "properties"
-        this.domain = returnOrder(this.sorting)
+        // this.domain = returnOrder(this.sorting, this.mutants)
         this.grouping = returnGroupings(this.sorting)
         this.cell_type = "squares"
 
@@ -185,10 +187,49 @@ class Sequence{
             })
             .style("opacity", this.AA_RECT_OPACITY)
             .attr("x", function(d){
-                return(that.x_scale(d.start) - that.max_radius)})
-            .attr("width", function(d){
+                let start = null
+                let cur_index = 0
 
-                return(that.x_scale(d.stop) - that.x_scale(d.start) + that.max_radius * 2)
+                while(cur_index < d.values.length - 1){
+                    if (that.mutants.includes(d.values[cur_index])){
+                        start = d.values[cur_index]
+                        break
+                    } 
+                    cur_index +=1
+                }
+                if (start !== null){
+                    return(that.x_scale(start) - that.max_radius)
+                }else{
+                    return(0)
+                }
+            })
+            .attr("width", function(d){
+                let start = null
+                let cur_index = 0
+                while(cur_index < d.values.length - 1){
+                    if (that.mutants.includes(d.values[cur_index])){
+                        start = d.values[cur_index]
+                        break
+                    } 
+                    cur_index +=1
+                }
+
+                let stop = null
+                cur_index =  d.values.length - 1
+                while(cur_index >= 0){
+                    if (that.mutants.includes(d.values[cur_index])){
+                        stop = d.values[cur_index]
+                        break
+                    } 
+                    cur_index -=1
+                }
+                
+                if (start !== null && stop !== null){
+                    return(that.x_scale(stop) - that.x_scale(start) + that.max_radius * 2)
+
+                } else{
+                    return(0)
+                }
             })
             .transition()
             .duration(function(){
@@ -210,7 +251,9 @@ class Sequence{
     sortAA(sorting){
         const that = this
         this.NEW_GROUPING = true
-        this.domain = returnOrder(sorting)
+        this.sorting = sorting
+
+        this.domain = returnOrder(sorting, this.mutants)
         this.x_scale.domain(this.domain)
         this.grouping = returnGroupings(sorting)
 
@@ -244,6 +287,7 @@ class Sequence{
 
     // Returns the conditions corresponding to that protein
     setProtein(selected_protein){
+        this.selected_protein = selected_protein
         this.protein_data = this.all_data.filter(function(d){return d.protein == selected_protein})
         this.getRegions()
 
@@ -261,7 +305,6 @@ class Sequence{
             let cur_domain_data = {"domain": domain, "start_pos": min_position, "stop_pos": max_position}
             this.domain_data.push(cur_domain_data)
         })
-        console.log("this.domain_data", this.domain_data)
     }
 
     setLegend(legend){
@@ -272,6 +315,10 @@ class Sequence{
         this.scatter = scatter
     }
 
+    setSnake(snake){
+        this.snake = snake
+    }
+
     setCondition(selected_condition){
         this.FIRST_TIME_DRAWING = true
         this.selected_condition = selected_condition
@@ -279,6 +326,8 @@ class Sequence{
 
         this.positions = [...new Set(this.filtered_data.map((item) => item.pos))];   
         this.mutants = [...new Set(this.filtered_data.map((item) => item.mut))]; 
+        this.domain = returnOrder(this.sorting, this.mutants)
+
 
         this.n_positions =  d3.max(this.positions.map(d => Number(d))) 
 
@@ -388,6 +437,7 @@ class Sequence{
 
     drawHeatMap(){
         if (this.selected_condition && this.selected_condition!= "Select A Condition"){
+
             this.legend.clear()
             this.legend.drawLegend()
  
@@ -398,10 +448,10 @@ class Sequence{
             this.HEAT_DRAWN = true
             const that = this
 
-
             this.heat_width = document.getElementById('heat-sticky-div').getBoundingClientRect().width 
             this.bar_width = document.getElementById('bar-sticky-div').getBoundingClientRect().width 
             this.max_radius = Math.floor(this.heat_width/this.mutants.length)/2
+
             let cur_svg_height = this.max_radius*this.n_positions*2
 
             this.heat_sticky_svg = this.heat_sticky_div.append("svg")
@@ -410,7 +460,6 @@ class Sequence{
                 .attr("height", "100%")
                 .style("background", "white")
                 .style("opacity", .9)
-                // .style("float", "left")
 
 
 
@@ -419,7 +468,6 @@ class Sequence{
                 .attr("width", "100%")
                 .attr("height", "100%")
                 .style("background", "white")
-                // .style("float", "right")
 
 
 
@@ -552,6 +600,9 @@ class Sequence{
             .append("rect")
             .on("mouseover", function(event,d){
                 that.scatter.heatMousover(d)
+                that.snake.heatMousover(d)
+
+
                 d3.select(".tooltip")
                 .style("opacity",1)
                 if (!that.FILTERING){
@@ -571,6 +622,7 @@ class Sequence{
             })
             .on("mouseleave", function(event,d){
                 that.scatter.heatMouseleave()
+                that.snake.heatMouseleave()
 
                 d3.select(".tooltip")
                 .style("opacity", 0)
@@ -699,7 +751,6 @@ class Sequence{
                 .style("opacity",  that.DEFAULT_DOMAIN_OPACITY)
             })
 
-            console.log("this.bar_width", this.bar_width)
 
             //Label region bars
             this.bar_svg.selectAll()

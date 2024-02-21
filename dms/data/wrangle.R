@@ -3,6 +3,8 @@ library(dplyr)
 library(jsonlite)
 library(httr)
 library(MASS)
+library(xml2)
+
 
 acidLookup<-function(x){
   # For converting three letter amino acid code to single letter abbreviation
@@ -74,7 +76,13 @@ by(metaData, seq_len(nrow(metaData)), function(row) {
   #                           Wrangle the raw data 
   ####################################################################################
   
-  df = read_tsv(paste0("raw_data/", cur_raw_file), col_names = F)
+  if(endsWith(cur_raw_file, ".tsv")){
+    df = read_tsv(paste0("raw_data/", cur_raw_file), col_names = F)
+  } else if(endsWith(cur_raw_file, ".csv")){
+    df = read_csv(paste0("raw_data/", cur_raw_file), col_names = F)
+    
+  }
+  
   df %>% filter(X1 != "hgvs") -> df
 
   t(df) -> df
@@ -190,6 +198,9 @@ by(metaData, seq_len(nrow(metaData)), function(row) {
       filter(pos != 1, wt != "ter")  %>% 
       dplyr::select(mut, pos, wt, freq)-> gnomad
     
+    gnomad$mut = as.character(gnomad$mut)
+    gnomad$wt = as.character(gnomad$wt)
+    
     left_join(score, gnomad, relationship = "many-to-many") -> score
     
     
@@ -260,11 +271,67 @@ by(metaData, seq_len(nrow(metaData)), function(row) {
       
       score %>% mutate(BW = gsub("x\\d+", "", BW)) -> score
     }else{
-      score$BW = NULL
-      score$protein_segment = NULL
+      score$BW <- NA
+      score$protein_segment <- NA
     }
+  } else{
+    score$BW <- NA
+    score$protein_segment <- NA
   }
   
+ 
+  
+  
+  
+  ####################################################################################
+  #                             Pull the snakeplot
+  ####################################################################################
+  # 
+  # It seems that the snake plot pulled from the API is in a different format than the snakeplot downloaded from the website. 
+  # For now, I'm going to keep this all commented out, and I will pull the snake plots manually for every gpcr
+  #
+  # if (correct_gpcrdb_id){
+  #   url <- paste0("https://gpcrdb.org/services/plot/snake/",cur_gpcr_id,"/")
+  #   headers <- c(
+  #     "accept" = "application/json",
+  #     "X-CSRFToken" = "Gm0GoA6r2QO8uWdtUlkjjVPJc7Kcx6hkr3ved0fxjlN2VU3CV06BBDVLK1EUcL6g"
+  #   )
+  # 
+  #   # Make the GET request
+  #   response <- GET(url, add_headers(.headers=headers))
+  # 
+  #   # Check the response status
+  #   response_status = status_code(response)
+  # 
+  #   json_data <- content(response, "text", encoding = "UTF-8")
+  # 
+  # 
+  # 
+  #   write(toJSON(json_data, pretty = TRUE), "formatted_data.json")
+  #   domain_data <- fromJSON(json_data)
+  # 
+  #   if (response_status == 200){
+  #     domain_data %>%
+  #       rename(wt = amino_acid,
+  #              pos = sequence_number,
+  #              BW = display_generic_number) %>%
+  #       mutate(pos = as.character(pos)) %>%
+  #       right_join(score, by = "pos")  %>%
+  #       dplyr::select(-wt.y) %>%
+  #       rename(wt = wt.x) -> score
+  # 
+  #     score %>% mutate(BW = gsub("x\\d+", "", BW)) -> score
+  #   }else{
+  #     score$BW = NULL
+  #     score$protein_segment = NULL
+  #   }
+  # }
+
+    
+  
+  ####################################################################################
+  #                           Final steps
+  ####################################################################################
   score %>% 
     filter(wt == mut & !is.na(value)) %>%
     group_by(condition) %>%
@@ -279,13 +346,6 @@ by(metaData, seq_len(nrow(metaData)), function(row) {
   #   densfun = "normal"
   # )
   
-  
-
-    
-  
-  ####################################################################################
-  #                           Final steps
-  ####################################################################################
   if (!is.na(cur_anonymous_name)){
     score$protein = cur_anonymous_name
     score$wt = "X"
