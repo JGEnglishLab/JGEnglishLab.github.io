@@ -1,0 +1,11 @@
+{
+  "OCT1": {
+    "protein_description": "Description for protein 2",
+    "protein_type": "Transporter",
+    "conditions": {
+      "OSM73": "Description for OSM73",
+      "1SM73": "Description for 1SM73",
+      "Abundance": "Description for Abundance"
+    }
+  }
+}

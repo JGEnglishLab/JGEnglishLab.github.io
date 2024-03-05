@@ -18,7 +18,7 @@ html, body {
     width: 100%;
 
 }
-#non-scroll-div{
+#left-parent-div{
     height: 100%;
     width: 60%;
     background-color: rgb(255, 255, 255);
@@ -26,9 +26,6 @@ html, body {
     /* position:sticky; */
     top: 0px;
     display: flex;
-       
-
-
  }
 
  #head-scatter-snake-div-wrapper{
@@ -45,6 +42,14 @@ html, body {
     width: 100%;
     height: 60px;
     position: sticky;
+ }
+ #methods-highlight-div{
+    background-color: #c1cbdb;
+    width: 70px;
+    height: 60px;
+    position: relative;
+    float: right;
+    cursor: help;
  }
  #scatter-div{
     background-color:  rgb(255, 255, 255);
@@ -67,7 +72,7 @@ html, body {
  }
 
  #sequence-legend-div-labels{
-    height: 120px;
+    height: 170px;
     width:100%;
     background-color: var(--background-grey);
     /* display: table; */
@@ -84,7 +89,7 @@ html, body {
     margin-left: 0px;
     /* float: right;  */
  }
-#scroll-div{
+#right-parent-div{
    height: 100%;
    width: 40%;
    overflow-y:scroll;
@@ -103,6 +108,7 @@ html, body {
     z-index: 2
  }
  #bar-sticky-div{
+    background-color: rgb(255, 255, 255);
     height: 50px;
     width: 30%;
     float:left;
@@ -110,7 +116,7 @@ html, body {
     top:0px;
     z-index: 2
  }
- #tooltip{
+ .tooltip{
     z-index: 3;
  }
 
@@ -147,6 +153,10 @@ OTHER ELEMENTS
 
 }
 
+.percentile-labels{
+    cursor: help;
+}
+
 #protein_select{
     cursor: pointer;
     font-family:monospace;
@@ -173,14 +183,49 @@ OTHER ELEMENTS
 }
 
 #heat_frequency_button{
-    position: relative;
+    position: absolute;
     font-family:monospace;
-    top: 60px;
+    top: 70px;
     display: inline-block;
+}
+
+#upper-percentile-slide{
+    position: absolute;
+    width: 100px;
+    top: 110px;
 
 }
 
-
-#question_icon{
-    cursor: help;
+#upper-percentile-slide-label{
+    position: relative;
+    top:90px;
+    left: 110px;
+    text-anchor: end;
+    font-family: monospace;
 }
+
+
+
+#lower-percentile-slide{
+    position: absolute;
+    width: 100px;
+    top: 140px;
+}
+
+#lower-percentile-slide-label{
+    position: relative;
+    top: 100px;
+    left: 110px;
+    text-anchor: end;
+    font-family: monospace;
+}
+#methods-text{
+    font-family: monospace;
+    text-anchor: middle;
+    margin-left: 5px;
+    pointer-events: none;
+}
+
+
+
+
