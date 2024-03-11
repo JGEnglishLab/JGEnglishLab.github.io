@@ -230,6 +230,7 @@ Condition search bars
     position: absolute;
     top: 150px;
     left: 50px;
+    font-family: monospace;
 }
 #search_bar_base_label{
     position: absolute;
@@ -237,6 +238,8 @@ Condition search bars
     left: 50px;
     font-size: 12px;
     font-weight: bold;
+    font-family: monospace;
+
 }
 #search_bar_stim_label{
     position: absolute;
@@ -244,20 +247,54 @@ Condition search bars
     left: 50px;
     font-size: 12px;
     font-weight: bold;
+    font-family: monospace;
+
 }
 #searchBarStim{
     position: absolute;
     top: 90px;
     left: 50px;
+    font-family: monospace;
+
+}
+#show_anonymous_conditions_condition_check{
+  position: absolute;
+  top: 175px;
+  left: 50px;
+}
+
+#show_anonymous_conditions_condition_check_label{
+  position: absolute;
+  top: 175px;
+  left: 70px;
+  font-family: monospace;
+  text-anchor: start;
+}
+
+#show_anonymous_conditions_motif_check{
+  position: absolute;
+  top: 55px;
+}
+
+#show_anonymous_conditions_motif_check_label{
+  position: absolute;
+  top: 55px;
+  left: 20px;
+  font-family: monospace;
+  text-anchor: start;
 }
 
 
 #option_drop_down{
   width: 250px;
+  font-family: monospace;
+
 }
 
 #search_bar_motifs{
   width: 250px;
+  font-family: monospace;
+
 }
 
 

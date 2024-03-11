@@ -1,5 +1,5 @@
 class Alpha{
-    constructor(all_data,globalApplicationState,volcano, h){
+    constructor(all_data,globalApplicationState,volcano, helper){
 
 
         //**********************************************************************************************
@@ -34,7 +34,8 @@ class Alpha{
         this.globalApplicationState = globalApplicationState
         
         this.all_data = all_data
-        this.h = h
+        this.h = helper
+        this.show_anonymized_data = d3.select("#show_anonymous_conditions_condition_check").checked
 
         this.volcano = volcano
         this.alpha_div = d3.select("#alpha-div") 
@@ -199,9 +200,6 @@ class Alpha{
 
         document.getElementById('searchBarBase').addEventListener('mousedown', function(event){
 
-            console.log("In click")
-            console.log("event.target", event.target)
-
             if (event.target === this && this.value != ""){
 
                 document.getElementById('searchBarBase').value = '';
@@ -222,6 +220,15 @@ class Alpha{
 
             }
         })
+
+        d3.select("#show_anonymous_conditions_condition_check").on("change", function(){
+            that.show_anonymized_data = this.checked
+            that.updateSearchOptions(that.bases, "base")
+            that.updateSearchOptions(that.stims, "stim")
+            console.log(that.show_anonymized_data, that.show_anonymized_data)
+            
+        })
+          
 
        
         //**********************************************************************************************
@@ -296,9 +303,6 @@ class Alpha{
     filter_options(option, selected_searchbar){
         const that = this
 
-        // console.log("option", option)
-        // console.log("seleselected_searchbarcted", selected_searchbar)
-
         // If they cleared a selection. Restore all options
         if (option ===null && selected_searchbar === "base"){
             that.updateSearchOptions(that.stims, "stim")
@@ -325,16 +329,14 @@ class Alpha{
 
 
     updateSearchOptions(options, selector) {
+        console.log("Update search options")
+        console.log("this.show_a _dataqa", this.show_anonymized_data)
+        if (!this.show_anonymized_data){
+            options = options.filter((d) => !d.includes("group_"))
+        }
         const that = this
-
         if (selector === "stim"){
-         
-
-
             var select = document.getElementById("searchBarStim");
-
-
-
             while (select.firstChild) {
                 select.removeChild(select.firstChild);
             }
@@ -409,23 +411,14 @@ class Alpha{
             // Get all unique tags
             options.forEach(function(option) {
 
-                // console.log("YO ", option)
-                //format the option to be able to access the tag dictionary
-                // let id = option.replace("\t(", "||")
-                // id = id.replace(")", "")
                 let id = that.globalApplicationState.display_name_map.revGet(option)
                 let tag = that.globalApplicationState.tag_map.get(id)
-
-                
-               
-
 
                 if (!all_tags.includes(tag)){
                     all_tags.push(tag)
                 }
             });
 
-            // console.log("All_tags", all_tags)
 
             //Pair all options with each tag
             all_tags.forEach(function(tag){
@@ -435,6 +428,7 @@ class Alpha{
                 options.forEach(function(option){
                     let id = that.globalApplicationState.display_name_map.revGet(option)
                     let cur_tag = that.globalApplicationState.tag_map.get(id)
+                    
                     if (cur_tag === tag){
                         let opt = document.createElement("option");
                         opt.text = opt.value = option;     

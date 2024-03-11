@@ -1,81 +1,85 @@
-,treatment,run_name,long_name,cell_type,concentration,time,tag,anonymous_name,Unnamed: 8,Unnamed: 9
-0,SF,19664,Serum Free,HEK293,,6 (hours),Basal,,,
-1,FBS,19664,Fetal Bovine Serum,HEK293,10%,6 (hours),Fetal bovine serum,,,
-2,Forskolin,19664,Forskolin,HEK293,20 uM,6 (hours),Miscellaneous,,,
-3,ATP,19664,ATP,HEK293,50 uM,6 (hours),Miscellaneous,,,
-4,GPR91-no-drug,19664,GPR91 no drug,HEK293,,6 (hours),GPCR,,,
-5,GPR91-CES,19664,GPR91 CES,HEK293,30 uM,6 (hours),GPCR,,,
-6,DRD2-no-drug,19664,DRD2 no drug,HEK293,,6 (hours),other,,,DROP THESE
-7,DRD2-dopamine,19664,DRD2 dopamine,HEK293,1 uM,6 (hours),other,,,DROP THESE
-8,DRD2-ropinirole,19664,DRD2 ropinirole,HEK293,100 nM,6 (hours),other,,,DROP THESE
-9,DNA,19664,DNA,,,,,,,
-0,a001,g2,a001,Redacted,Redacted,Redacted,g2,a001,,
-1,a002,g2,a002,Redacted,Redacted,Redacted,g2,a002,,
-2,a003,g2,a003,Redacted,Redacted,Redacted,g2,a003,,
-3,a004,g2,a004,Redacted,Redacted,Redacted,g2,a004,,
-4,a005,g2,a005,Redacted,Redacted,Redacted,g2,a005,,
-5,a006,g2,a006,Redacted,Redacted,Redacted,g2,a006,,
-6,a001,g3,a001,Redacted,Redacted,Redacted,g3,a001,,
-7,a002,g3,a002,Redacted,Redacted,Redacted,g3,a002,,
-8,a003,g3,a003,Redacted,Redacted,Redacted,g3,a003,,
-9,a004,g3,a004,Redacted,Redacted,Redacted,g3,a004,,
-10,a005,g3,a005,Redacted,Redacted,Redacted,g3,a005,,
-11,a006,g3,a006,Redacted,Redacted,Redacted,g3,a006,,
-12,DNA,22482,DNA,Blank,Blank,Blank,,,,
-0,A375-SF,21311.2,Serum Free A375,A375,,6 h,Fetal bovine serum,,,
-1,A375-FBS,21311.2,Fetal Bovine Serum A375,A375,10%,6 h,Fetal bovine serum,,,
-2,DNA,21311.2,DNA,,,,,,,
-0,MDA-SF,21311,Serum Free MDA,MDA,,6 (hours),Fetal bovine serum,,,
-1,MDA-FBS,21311,Fetal Bovine Serum MDA,MDA,10%,6 (hours),Fetal bovine serum,,,
-2,HeLa-SF,21311,Serum Free HeLa,HeLa,,6 (hours),Fetal bovine serum,,,
-3,HeLa-FBS,21311,Fetal Bovine Serum HeLa,HeLa,10%,6 (hours),Fetal bovine serum,,,
-4,OPRM1,21311,OPRM1,HEK293,,6 (hours),GPCR,,,
-5,Morphine,21311,OPRM1 + Morphine,HEK293,100 nM,6 (hours),GPCR,,,
-6,G255E,21311,OPRM1 (G255E),HEK293,,6 (hours),GPCR,,,
-7,G255E-Morph,21311,OPRM1 (G255E) + Morphine,HEK293,100 nM,6 (hours),GPCR,,,
-8,NTSR1,21311,NTSR1,HEK293,,6 (hours),GPCR,,,
-9,NT,21311,NTSR1 + Neurotensin,HEK293,100 nM,6 (hours),GPCR,,,
-10,a001,g1,a001,Redacted,Redacted,Redacted,g1,a001,,
-11,a002,g1,a002,Redacted,Redacted,Redacted,g1,a002,,
-12,a003,g1,a003,Redacted,Redacted,Redacted,g1,a003,,
-13,a004,g1,a004,Redacted,Redacted,Redacted,g1,a004,,
-14,a005,g1,a005,Redacted,Redacted,Redacted,g1,a005,,
-15,a006,g1,a006,Redacted,Redacted,Redacted,g1,a006,,
-16,DRD1,21311,DRD1,HEK293,,6 (hours),GPCR,,,
-17,DopaD1,21311,DRD1 + Dopamine,HEK293,30 uM,6 (hours),GPCR,,,
-18,DRD2,21311,DRD2,HEK293,,6 (hours),GPCR,,,
-19,DopaD2,21311,DRD2 + Dopamine,HEK293,30 uM,6 (hours),GPCR,,,
-20,Thrombin,21311,Thrombin,HeLa,10 nM,6 (hours),Miscellaneous,,,
-21,PAR1,21311,PAR1,HeLa,,6 (hours),GPCR,,,
-22,P-T,21311,PAR1 + Thrombin,HeLa,10 nM,6 (hours),GPCR,,,
-23,BHK-SF,21311,Serum Free BHK-21,BHK-21,,6 (hours),Fetal bovine serum,,,
-24,BHK-FBS,21311,Fetal Bovine Serum BHK-21,BHK-21,5%,6 (hours),Fetal bovine serum,,,
-25,a001,g0,a001,Redacted,Redacted,Redacted,g0,a001,,
-26,a002,g0,a002,Redacted,Redacted,Redacted,g0,a002,,
-27,DNA,21311,DNA,,,,,,,
-0,GFP,20250,GFP,HEK293,,6 (hours),Basal,,,
-1,pcDNA,20250,pcDNA,HEK293,,6 (hours),Basal,,,
-2,Thap,20250,Thapsigargin,HEK293,2 uM,6 (hours),Miscellaneous,,,
-3,ADRB2-1,20250,GFP + Epinephrine,HEK293,10 nM,6 (hours),Miscellaneous,,,
-4,ADRB2-2,20250,GFP + Epinephrine,HEK293,1 uM,6 (hours),Miscellaneous,,,
-5,ADRB2-3,20250,ADRB2,HEK293,,6 (hours),GPCR,,,
-6,ADRB2-4,20250,ADRB2 + Epinephrine,HEK293,10 nM,6 (hours),GPCR,,,
-7,ADRB2-5,20250,ADRB2 + Epinephrine,HEK293,1 uM,6 (hours),GPCR,,,
-8,MRG,20250,MRGPRX2,HEK293,,6 (hours),GPCR,,,
-9,3573,20250,MRGPRX2 + (R)-zn3573,HEK293,3 uM,6 (hours),GPCR,,,
-10,Neuro2A-SF,20250,Neuro2a Serum Free,N2A,,6 (hours),Fetal bovine serum,,,
-11,Neuro2A-FBS,20250,Neuro2a + Fetal Bovine Serum,N2A,10%,6 (hours),Fetal bovine serum,,,
-12,DNA,20250,DNA,,,,,,,
-0,SF,19919,Serum Free,HEK293,,6 (hours),Basal,,,
-1,AICAR,19919,AICAR,HEK293,100 uM,6 (hours),Miscellaneous,,,
-2,Dex,19919,Dexamethasone,HEK293,100 nM,6 (hours),Miscellaneous,,,
-3,CdCl2,19919,CdCl2,HEK293,30 uM,6 (hours),Heavy metal,,,
-4,ZnS04,19919,ZnS04,HEK293,200 uM,6 (hours),Heavy metal,,,
-5,HTR2A,19919,5-HT2A,HEK293,,6 (hours),GPCR,,,
-6,5HT2A,19919,5-HT2A + Serotonin,HEK293,100 nM,6 (hours),GPCR,,,
-7,DFX,19919,Deferoxamine,HEK293,100 uM,6 (hours),Miscellaneous,,,
-8,LiCl2,19919,LiCl2,HEK293,40 mM,6 (hours),Miscellaneous,,,
-9,pcDNA,19919,pcDNA,HEK293,,6 (hours),Basal,,,
-10,PAR1,19919,PAR1,HEK293,,6 (hours),GPCR,,,
-11,Throm,19919,PAR1 + Thrombin,HEK293,10 nM,6 (hours),GPCR,,,
-12,DNA,19919,DNA,,,,,,,
+,treatment,run_name,long_name,cell_type,concentration,time,tag,anonymous_name,anonymous_tag
+0,SF,19664,Serum Free,HEK293,,6 (hours),Basal,,
+1,FBS,19664,Fetal Bovine Serum,HEK293,10%,6 (hours),Fetal bovine serum,,
+2,Forskolin,19664,Forskolin,HEK293,20 uM,6 (hours),Miscellaneous,,
+3,ATP,19664,ATP,HEK293,50 uM,6 (hours),Miscellaneous,,
+4,GPR91-no-drug,19664,GPR91 no drug,HEK293,,6 (hours),GPCR,,
+5,GPR91-CES,19664,GPR91 CES,HEK293,30 uM,6 (hours),GPCR,,
+6,a001,group_0,a001,Redacted,Redacted,Redacted,group_0,a001,group_0
+7,a002,group_0,a002,Redacted,Redacted,Redacted,group_0,a002,group_0
+8,a003,group_0,a003,Redacted,Redacted,Redacted,group_0,a003,group_0
+9,DNA,19664,DNA,,,,,,
+10,NTSR1,23820,NTSR1,HEK293T,Blank,6 (hours),GPCR,,
+11,NT,23820,NTSR1 + Neurotensin 8-13,HEK293T,100 nM,6 (hours),GPCR,,
+12,Gq-inh,23820,NTSR1 + Neurotensin 8-13 + FR900359,HEK293T,100 nM + 50 nM,6 (hours),GPCR,,
+13,DNA,23820,DNA,Blank,Blank,Blank,,,
+14,a001,group_1,a001,Redacted,Redacted,Redacted,group_1,a001,group_1
+15,a002,group_1,a002,Redacted,Redacted,Redacted,group_1,a002,group_1
+16,a003,group_1,a003,Redacted,Redacted,Redacted,group_1,a003,group_1
+17,a004,group_1,a004,Redacted,Redacted,Redacted,group_1,a004,group_1
+18,a005,group_1,a005,Redacted,Redacted,Redacted,group_1,a005,group_1
+19,a006,group_1,a006,Redacted,Redacted,Redacted,group_1,a006,group_1
+20,a001,group_2,a001,Redacted,Redacted,Redacted,group_2,a001,group_2
+21,a002,group_2,a002,Redacted,Redacted,Redacted,group_2,a002,group_2
+22,a003,group_2,a003,Redacted,Redacted,Redacted,group_2,a003,group_2
+23,a004,group_2,a004,Redacted,Redacted,Redacted,group_2,a004,group_2
+24,a005,group_2,a005,Redacted,Redacted,Redacted,group_2,a005,group_2
+25,a006,group_2,a006,Redacted,Redacted,Redacted,group_2,a006,group_2
+26,DNA,22482,DNA,Blank,Blank,Blank,,,
+27,A375-SF,21311.2,Serum Free A375,A375,,6 h,Fetal bovine serum,,
+28,A375-FBS,21311.2,Fetal Bovine Serum A375,A375,10%,6 h,Fetal bovine serum,,
+29,DNA,21311.2,DNA,,,,,,
+30,SF,19919,Serum Free,HEK293,,6 (hours),Basal,,
+31,AICAR,19919,AICAR,HEK293,100 uM,6 (hours),Miscellaneous,,
+32,Dex,19919,Dexamethasone,HEK293,100 nM,6 (hours),Miscellaneous,,
+33,CdCl2,19919,CdCl2,HEK293,30 uM,6 (hours),Heavy metal,,
+34,ZnS04,19919,ZnS04,HEK293,200 uM,6 (hours),Heavy metal,,
+35,HTR2A,19919,5-HT2A,HEK293,,6 (hours),GPCR,,
+36,5HT2A,19919,5-HT2A + Serotonin,HEK293,100 nM,6 (hours),GPCR,,
+37,DFX,19919,Deferoxamine,HEK293,100 uM,6 (hours),Miscellaneous,,
+38,LiCl2,19919,LiCl2,HEK293,40 mM,6 (hours),Miscellaneous,,
+39,pcDNA,19919,pcDNA,HEK293,,6 (hours),Basal,,
+40,PAR1,19919,PAR1,HEK293,,6 (hours),GPCR,,
+41,Throm,19919,PAR1 + Thrombin,HEK293,10 nM,6 (hours),GPCR,,
+42,DNA,19919,DNA,,,,,,
+43,MDA-SF,21311,Serum Free MDA,MDA,,6 (hours),Fetal bovine serum,,
+44,MDA-FBS,21311,Fetal Bovine Serum MDA,MDA,10%,6 (hours),Fetal bovine serum,,
+45,HeLa-SF,21311,Serum Free HeLa,HeLa,,6 (hours),Fetal bovine serum,,
+46,HeLa-FBS,21311,Fetal Bovine Serum HeLa,HeLa,10%,6 (hours),Fetal bovine serum,,
+47,OPRM1,21311,OPRM1,HEK293,,6 (hours),GPCR,,
+48,Morphine,21311,OPRM1 + Morphine,HEK293,100 nM,6 (hours),GPCR,,
+49,a004,group_0,a004,Redacted,Redacted,Redacted,group_0,a004,group_0
+50,a005,group_0,a005,Redacted,Redacted,Redacted,group_0,a005,group_0
+51,a006,group_0,a006,Redacted,Redacted,Redacted,group_0,a006,group_0
+52,a007,group_0,a007,Redacted,Redacted,Redacted,group_0,a007,group_0
+53,a001,group_3,a001,Redacted,Redacted,Redacted,group_3,a001,group_3
+54,a002,group_3,a002,Redacted,Redacted,Redacted,group_3,a002,group_3
+55,a003,group_3,a003,Redacted,Redacted,Redacted,group_3,a003,group_3
+56,a004,group_3,a004,Redacted,Redacted,Redacted,group_3,a004,group_3
+57,a005,group_3,a005,Redacted,Redacted,Redacted,group_3,a005,group_3
+58,a006,group_3,a006,Redacted,Redacted,Redacted,group_3,a006,group_3
+59,DRD1,21311,DRD1,HEK293,,6 (hours),GPCR,,
+60,DopaD1,21311,DRD1 + Dopamine,HEK293,30 uM,6 (hours),GPCR,,
+61,DRD2,21311,DRD2,HEK293,,6 (hours),GPCR,,
+62,DopaD2,21311,DRD2 + Dopamine,HEK293,30 uM,6 (hours),GPCR,,
+63,Thrombin,21311,Thrombin,HeLa,10 nM,6 (hours),Miscellaneous,,
+64,a008,group_0,a008,Redacted,Redacted,Redacted,group_0,a008,group_0
+65,a009,group_0,a009,Redacted,Redacted,Redacted,group_0,a009,group_0
+66,BHK-SF,21311,Serum Free BHK-21,BHK-21,,6 (hours),Fetal bovine serum,,
+67,BHK-FBS,21311,Fetal Bovine Serum BHK-21,BHK-21,5%,6 (hours),Fetal bovine serum,,
+68,a010,group_0,a010,Redacted,Redacted,Redacted,group_0,a010,group_0
+69,a011,group_0,a011,Redacted,Redacted,Redacted,group_0,a011,group_0
+70,DNA,21311,DNA,,,,,,
+71,GFP,20250,GFP,HEK293,,6 (hours),Basal,,
+72,pcDNA,20250,pcDNA,HEK293,,6 (hours),Basal,,
+73,Thap,20250,Thapsigargin,HEK293,2 uM,6 (hours),Miscellaneous,,
+74,a012,group_0,a012,Redacted,Redacted,Redacted,group_0,a012,group_0
+75,ADRB2-2,20250,GFP + Epinephrine High,HEK293,1 uM,6 (hours),Miscellaneous,,
+76,ADRB2-3,20250,ADRB2,HEK293,,6 (hours),GPCR,,
+77,a013,group_0,a013,Redacted,Redacted,Redacted,group_0,a013,group_0
+78,ADRB2-5,20250,ADRB2 + Epinephrine High,HEK293,1 uM,6 (hours),GPCR,,
+79,MRG,20250,MRGPRX2,HEK293,,6 (hours),GPCR,,
+80,3573,20250,MRGPRX2 + (R)-zn3573,HEK293,3 uM,6 (hours),GPCR,,
+81,Neuro2A-SF,20250,Neuro2a Serum Free,N2A,,6 (hours),Fetal bovine serum,,
+82,Neuro2A-FBS,20250,Neuro2a + Fetal Bovine Serum,N2A,10%,6 (hours),Fetal bovine serum,,
+83,DNA,20250,DNA,,,,,,

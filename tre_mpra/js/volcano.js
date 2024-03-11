@@ -1,5 +1,5 @@
 class Volcano{
-    constructor(all_data, globalApplicationState, h){
+    constructor(all_data, globalApplicationState, helper){
 
         //**********************************************************************************************
         //                                  CONSTANTS FOR CHART SIZE
@@ -37,7 +37,7 @@ class Volcano{
         this.all_data = all_data
         this.globalApplicationState = globalApplicationState
 
-        this.h = h
+        this.h = helper
 
         this.volcano_div = d3.select("#volcano-div") 
     

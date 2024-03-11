@@ -6,7 +6,7 @@ import math
 PATH_TO_PAIRWISE_FILES = "./data/comp_data/"
 PATH_TO_EMPIRICAL_FILES = "./data/emp_data/"
 PATH_TO_META_DATA = './data/meta_data/'
-PATH_TO_RESULTS = "./data"
+PATH_TO_RESULTS = "./data/"
 
 #Get all the meta data
 meta_data_dfs = []
@@ -18,28 +18,40 @@ for file_name in os.listdir(PATH_TO_META_DATA):
 
 final_meta_data = pd.concat(meta_data_dfs)
 
+#Get all the rows with an anonymous name
+#Create their "anonymous_tag" (just group_{n} where n is the order the show up"
+#Write this df to a csv. This csv will be the master key.
+anonymous_df=final_meta_data[final_meta_data.anonymous_name.notnull()]
+unique_anonymous_groups = pd.DataFrame((anonymous_df["tag"]).unique(), columns=["tag"])
+unique_anonymous_groups['anonymous_tag'] = range(len(unique_anonymous_groups))
+unique_anonymous_groups['anonymous_tag'] = 'group_' + unique_anonymous_groups['anonymous_tag'].astype(str)
+anonymous_df = anonymous_df.merge(unique_anonymous_groups, how='left')
+anonymous_df = anonymous_df.sort_values(by=['anonymous_tag', 'anonymous_name'])
+anonymous_df.to_csv(f"{PATH_TO_RESULTS}anonymous_key.csv")
 
 
-
-
+#Add anonymous tag to final_meta_data
+final_meta_data=final_meta_data.merge(unique_anonymous_groups, how='left')
 #If anonymous_name
 #Set long_name and treatment = anonymous_name
 #Set run_name = tag
-#Set {treatment|run = anonymous_name|tag}
-anonymous_name_dict = dict(zip(final_meta_data.treatment+"|"+final_meta_data.run_name , final_meta_data.anonymous_name+"|"+final_meta_data.tag))
+#Set {treatment|run = anonymous_name|anonymous_tag}
+anonymous_name_dict = dict(zip(final_meta_data.treatment+"|"+final_meta_data.run_name , final_meta_data.anonymous_name+"|"+final_meta_data.anonymous_tag))
+
 
 def redact_data(row):
     if pd.notna(row['anonymous_name']):
         row['long_name'] = row['anonymous_name']
         row['treatment'] = row['anonymous_name']
-        row['run_name'] = row['tag']
+        row['run_name'] = row['anonymous_tag']
+        row['tag'] = row['anonymous_tag']
         row['concentration'] = 'Redacted'
         row['time'] = 'Redacted'
         row['cell_type'] = 'Redacted'
     return row
-final_meta_data = final_meta_data.apply(redact_data, axis=1)
-final_meta_data.to_csv(f"./{PATH_TO_RESULTS}/current_runs_meta_data.csv")
 
+final_meta_data = final_meta_data.apply(redact_data, axis=1)
+final_meta_data.to_csv(f"./{PATH_TO_RESULTS}current_runs_meta_data.csv")
 
 final_df = pd.DataFrame()
 
@@ -77,13 +89,6 @@ for file_name in os.listdir(PATH_TO_EMPIRICAL_FILES):
                 cur_csv.rename(
                     columns={col: col.replace(f"_{treatment_name}", f"__{treatment}__{run_name}") for col in cur_csv.columns if col.endswith(f"_{treatment_name}")},
                     inplace=True)
-
-
-
-        # cur_csv.rename(
-        #     columns={col: col.replace(f"_{treatment}", f"__{treatment}__{cur_run}") for col in cur_csv.columns if
-        #              col.endswith(f"_{treatment}")},
-        #     inplace=True)
 
         if count == 1:
             final_df = cur_csv
@@ -155,7 +160,7 @@ for file_name in os.listdir(PATH_TO_PAIRWISE_FILES):
 
 final_df[['motif', 'not']] = final_df['architecture'].str.split(":", expand=True)
 final_df.drop(['not'], axis=1)
-final_df.to_csv(f"./{PATH_TO_RESULTS}/current_runs.csv")
+final_df.to_csv(f"./{PATH_TO_RESULTS}current_runs.csv")
 
 
 #Wrangle the data for the heat map.
@@ -163,5 +168,5 @@ filter_col = [col for col in final_df if col.startswith('aggregate_') or col == 
 
 alpha_df = final_df[filter_col]
 melted_df = pd.melt(alpha_df, id_vars=['architecture', 'motif', 'controls'], var_name='alpha', value_name='Value')
-melted_df.to_csv(f"./{PATH_TO_RESULTS}/current_runs_alpha_data.csv")
+melted_df.to_csv(f"./{PATH_TO_RESULTS}current_runs_alpha_data.csv")
 

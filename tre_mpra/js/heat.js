@@ -5,15 +5,17 @@ class Heat{
         //**********************************************************************************************
         //                                      CONSTANTS 
         //**********************************************************************************************
-        this.WIDTH = 1400 
-        this.HEIGHT = 500
-        this.MARGIN_TOP = 10
+        this.WIDTH = document.body.scrollWidth
+        this.HEIGHT = document.body.scrollHeight //1000
+        this.MARGIN_TOP = 40
         this.MARGIN_RIGHT = 210
-        this.MARGIN_LEFT = 100
-        this.MARGIN_BOTTOM = 100
+        this.MARGIN_LEFT = 130
+        this.MARGIN_BOTTOM = 200
         this.HEAT_MAP_DRAWN = false
         this.SHIFT_LEGEND_DOWN = 50
-        
+        this.LEGEND_MARGIN_LEFT = 10
+        this.LEGEND_RECT_OVERLAP = 3
+
 
         //**********************************************************************************************
         //                                  GENERAL SET UP 
@@ -24,9 +26,8 @@ class Heat{
         this.all_data = all_data
         this.heat_div = d3.select("#heat-div") 
         this.sort_type = "Sort By Transcription Rate"
-
-       
-
+        this.show_anonymized_data = false
+        this.heat_map_drawn = false
 
         this.heatSvg = this.heat_div.append("svg")
         .attr('id', 'heat_svg')
@@ -46,7 +47,7 @@ class Heat{
         this.heatSvg.append("text")
         .attr("id", "legend_label")
         .attr("y",25)
-        .attr("x", 1200)
+        .attr("x", this.WIDTH - this.MARGIN_RIGHT + this.LEGEND_MARGIN_LEFT)
         .style("opacity", 0)
         .text("Transcription Rate")
      
@@ -54,7 +55,7 @@ class Heat{
         //Modify the names to look how we want
         for (let obj of this.all_data){
             obj.alpha = obj.alpha.split("aggregate_rpm_ratio__")[1]
-            obj.alpha = obj.alpha.split("__")[0] + " (" + obj.alpha.split("__")[1]+")"
+            obj.alpha = obj.alpha.split("__")[0] + " " + obj.alpha.split("__")[1]
             obj.architecture = obj.architecture.split(",")[1] + ", " + obj.architecture.split(",")[2] + ", " + obj.architecture.split(",")[3]
         }
         
@@ -69,6 +70,13 @@ class Heat{
         this.searchBarMotif.appendChild(this.datalistMotifs); 
         
         //Set up listeners
+        document.getElementById('show_anonymous_conditions_motif_check').addEventListener('change', function(){
+            that.show_anonymized_data = d3.select(this).property("checked")
+            if (that.heat_map_drawn){
+                that.drawHeatMap(that.selectedOption, that.sort_type)
+            }
+        })
+
         document.getElementById('search_bar_motifs').addEventListener('change', function(){
             var selectedOption = d3.select(this).property("value")
             that.drawHeatMap(selectedOption, that.sort_type)
@@ -115,6 +123,10 @@ class Heat{
     }
 
     drawHeatMap(selected_option, sort_type){
+        this.selectedOption = selected_option
+        this.sort_type = sort_type
+        this.heat_map_drawn = true
+        const that = this
         this.heatSvg.selectAll("rect").remove()
         this.HEAT_MAP_DRAWN = true
 
@@ -145,9 +157,7 @@ class Heat{
         this.filtered_data = this.all_data.filter(function(d){return d.motif == selected_option})
         this.architectures = [...new Set(this.filtered_data.map((item) => item.architecture))];   
         this.conditions = [...new Set(this.filtered_data.map((item) => item.alpha))]; 
-
-        console.log("sort_type", sort_type)
-        console.log("first", this.conditions)
+    
 
         if (sort_type == "Sort By Transcription Rate"){
             this.sort_architectures()
@@ -156,7 +166,41 @@ class Heat{
         else if (sort_type == "Sort Conditions Alphabetically"){
             this.alphabetize()
         }
-        
+
+        if (!this.show_anonymized_data){
+            this.conditions = this.conditions.filter((d) => !d.includes("group_"))
+
+        }
+
+    
+
+        const counter = new Map()
+        this.conditions.forEach(c => {
+            let treatment =  c.split(" ")[0]
+            let run =  c.split(" ")[1]
+            let key = treatment+"||"+run
+            let name = that.globalApplicationState.long_name_map.get(key)
+
+            if (counter.get(name)) {
+                let cur_count = counter.get(name)
+                counter.set(name, cur_count+1);
+            } 
+            else {
+                counter.set(name, 1);
+            }
+        });
+
+        this.conditions = this.conditions.map(function(c) {
+            let treatment =  c.split(" ")[0]
+            let run =  c.split(" ")[1]
+            let key = treatment+"||"+run
+            let name = that.globalApplicationState.long_name_map.get(key)
+            if (counter.get(name) > 1 || run.includes("group_")){
+                name = name + " (" +run + ")"
+            }
+            return(name)
+        })
+
         this.x_scale
         .domain(this.conditions)
         this.y_scale
@@ -164,28 +208,41 @@ class Heat{
 
         this.x_axis.call(this.xAxis)
         .selectAll("text")
-        .attr("transform", "rotate(-45) translate(-50,0)") //TODO write a function that will get how far down you need to shift this. 
-        .attr("alignment-baseline","right");
+        .attr("transform", "rotate(-45) translate(-10,0)") 
+        .attr("text-anchor","end")
+        .attr("font-family","monospace")
+
 
         this.y_axis.call(this.yAxis)
+        .attr("font-family","monospace")
+
        
         let max_alpha =  d3.max(this.filtered_data.map(d => +d.Value))
         let min_alpha =  d3.min(this.filtered_data.map(d => +d.Value))
         let myColor = d3.scaleSequential()
-        // .interpolator(d3.interpolateGreens)
-        // .interpolator(d3.interpolateGnBu)
         .interpolator(d3.interpolateYlGnBu)
         .domain([min_alpha,max_alpha])
 
+        if (!this.show_anonymized_data){
+            this.filtered_data = this.filtered_data.filter((d) => !d.alpha.includes("group_"))
 
-        const that = this
+        }
 
         this.heatSvg.selectAll()
         .data(this.filtered_data)
         .enter()
         .append("rect")
           .attr("id", "heat_rect")
-          .attr("x", function(d) { return that.x_scale(d.alpha) })
+          .attr("x", function(d) { 
+            let treatment =  d.alpha.split(" ")[0]
+            let run =  d.alpha.split(" ")[1]
+            let key = treatment+"||"+run
+            let name = that.globalApplicationState.long_name_map.get(key)
+            if (counter.get(name) > 1 || run.includes("group_")){
+                name = name + " (" +run + ")"
+            }
+            return(that.x_scale(name))
+            })
           .attr("y", function(d) { return that.y_scale(d.architecture) })
           .attr("width", that.x_scale.bandwidth() )
           .attr("height", that.y_scale.bandwidth() )
@@ -195,7 +252,8 @@ class Heat{
           .on("mouseover", (event, d) => {
             d3.select(".tooltip")
               .style("opacity", 1)
-              .html(`Condition: ${d.alpha}<br>Architecture: ${d.architecture}<br>Transcription Rate: ${d.Value}`)
+              .html(`Condition: ${d.alpha}<br>Architecture: ${d.architecture}<br>Transcription Rate: ${ Math.round(d.Value * 100) / 100
+            }`)
               .style("left", `${event.pageX + 30}px`)
               .style("top", `${event.pageY - 10}px`)
           })
@@ -213,7 +271,7 @@ class Heat{
 
           const legendWidth = 20; // Adjust the width as needed
           const legendHeight = 310; // Adjust the height as needed
-          const numColorStops = 10; // Adjust the number of color stops as needed
+          const numColorStops = 90; // Adjust the number of color stops as needed
           
           const legendSVG = this.heatSvg // Select a container for the legend
             .append("svg")
@@ -236,18 +294,20 @@ class Heat{
             return myColor(min_alpha + t * (max_alpha - min_alpha));
           });
 
+          
+
           this.heatSvg
           .selectAll()
             .data(gradient)
             .enter()
             .append("rect")
-            .attr("x", 0)
+            .attr("x", this.WIDTH - this.MARGIN_RIGHT + this.LEGEND_MARGIN_LEFT )
             .attr("y", (d, i) => i * (legendHeight / (numColorStops - 1)))
             .attr("width", legendWidth )
-            .attr("height", legendHeight/ (numColorStops - 1))
+            .attr("height", legendHeight/ (numColorStops - 1) + this.LEGEND_RECT_OVERLAP)
             .style("fill", d => d)
-            .attr("transform", `translate(1200,${this.SHIFT_LEGEND_DOWN})`)
-            .attr("stroke", "grey") 
+            .attr("transform", `translate(0,${this.SHIFT_LEGEND_DOWN})`)
+            // .attr("stroke", "grey") 
             .on("mouseover", (event, d) => {
                 d3.select(".tooltip")
                   .style("opacity", 1)
@@ -270,14 +330,14 @@ class Heat{
 
             var yscale = d3.scaleLinear() 
             .domain([min_alpha, max_alpha]) 
-            .range([0, legendHeight ])
+            .range([0, legendHeight + legendHeight/ (numColorStops - 1)])
   
             var y_axis = d3.axisRight(yscale) 
-            .tickValues(slots)
+            // .tickValues(slots)
             .tickSize(9)
     
             this.g_label
-                .attr("transform", `translate(1220,${this.SHIFT_LEGEND_DOWN})`) 
+                .attr("transform", `translate(${this.WIDTH - this.MARGIN_RIGHT + this.LEGEND_MARGIN_LEFT + legendWidth},${this.SHIFT_LEGEND_DOWN})`) 
                 .call(y_axis)
 
         

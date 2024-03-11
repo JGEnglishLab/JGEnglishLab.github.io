@@ -40,18 +40,16 @@
                 <!-- <input type="text" id="searchBarBase" size="50" list="searchOptionsBase" style="float:right;"placeholder="Search basal conditions..."> -->
                 <!-- <input type="text" id="searchBarStim" size="50" list="searchOptionsStim" style="float:right;"placeholder="Search stimulated conditions..."> -->
                 
-               
-
                 <select id="searchBarStim">
                     <option value="">--Please choose a stimulated treatment--</option>
                 </select>
                 <select id="searchBarBase">
                     <option value="">--Please choose a base treatment--</option>
-
-
                 </select>
-                
-                
+
+                <input type="checkbox" autocomplete="off"id="show_anonymous_conditions_condition_check">
+
+                <label for="show_anonymous_conditions_condition_check", id = "show_anonymous_conditions_condition_check_label">Show anonymized basal/stimulated conditions</label><br>
                 <label for="searchBarBase", id = "search_bar_base_label">Select a Basal Condition</label>
                 <label for="searchBarStim", id = "search_bar_stim_label">Select a Stimulated Condition</label>
 
@@ -63,7 +61,6 @@
                     <button id="copy-button-top" class="oligo_group">Copy Top Oligo</button>
                     <button id="copy-button-bottom" class="oligo_group">Copy Bottom Oligo</button>
                     <input type="text" id="searchBar" list="searchOptions" placeholder="Search Motifs...">
-                    <!-- <button id="filter_button">Filter By Searched Motif</button> -->
 
                     <input type="checkbox", id="filter_motif_check">
                     <label for="filter_motif_check", id = "filter_motif_check_label" >Filter By Searched Motif</label>
@@ -85,18 +82,18 @@
             <select name="Select an Option" id="option_drop_down">
                 <option value="Sort By Transcription Rate">Sort By Transcription Rate</option>
                 <option value="Sort Conditions Alphabetically">Sort Conditions Alphabetically</option>
-                <!-- <option value="Cluster">Cluster</option>     -->
             </select>
 
-
+            <input type="checkbox" autocomplete="off"id="show_anonymous_conditions_motif_check">
+            <label for="show_anonymous_conditions_motif_check", id = "show_anonymous_conditions_motif_check_label">Show anonymized conditions</label><br>
             <div id="heat-div">
             </div>
-            <div class="bottom-row">
+            <!-- <div class="bottom-row">
                 <div id="scatter-div">
                 </div>
                 <div id="motif-info-div">
                 </div>
-            </div>
+            </div> -->
             
         </div>
 </body>

@@ -146,8 +146,6 @@ d3.select("#motif_view_button").on("mouseleave", function() {
   }
 });
 
-
-
 Promise.all([all_data, sequences, meta_data, alpha_data]).then( data =>
     {
 
@@ -228,6 +226,7 @@ Promise.all([all_data, sequences, meta_data, alpha_data]).then( data =>
           }
         }
 
+    console.log("globalApplicationState.long_name_map", globalApplicationState.long_name_map)
     base_runs.forEach((base_run, index) => {
       let base_treatment = base_treatments[index];
       let stim_treatment = stim_treatments[index];
