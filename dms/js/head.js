@@ -297,24 +297,6 @@ class Head{
           snake.circles.style("pointer-events", "all")
           scatter.points.selectAll(".scatter-circle").style("pointer-events", "none")
       }
-    })
-
-
-      
-
-      
-
-
-
-      
-  
-      
-
-      
-
-
-        
-
-        
+    })   
     }
 }
