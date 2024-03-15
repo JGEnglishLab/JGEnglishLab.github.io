@@ -611,7 +611,7 @@ class Scatter{
                 })
                 .on("mousemove", function(event){
                     let selected_protein_conditions = that.descriptor_data[that.sequence.selected_protein].conditions
-                    defaultMousemove(selected_protein_conditions[that.sequence.selected_condition], event,-100,30)
+                    defaultMousemove(selected_protein_conditions[that.second_condition], event,-100,30)
                 })
                 .on("mouseleave", function(){
                     defaultMouseleave()

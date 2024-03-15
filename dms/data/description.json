@@ -7,5 +7,21 @@
       "1SM73": "Description for 1SM73",
       "Abundance": "Description for Abundance"
     }
+  },
+  "GPR68": {
+    "protein_description": "Description for GPR68",
+    "protein_type": "GPCR",
+    "cell_type": "HEK293t",
+    "construct": "Signal-Halo-MOR-mNeonGreenpt11",
+    "insertion_info": "i1 = insert G, i2 = insert GS, i3 = insert GSG",
+    "conditions": {
+      "Surface": "Surface expression is determined with an impermeable dye for an n-terminally tagged halo tag. <br>Low Effect Size = Low Surface Expression, <br>High Effect Size = High Surface Expression",
+      "activation_pH55": "Low Effect Size = Abolished Activity, <br>High Effect Size = Enhanced Activity",
+      "activation_pH55_ogr": "Low Effect Size = Abolished Activity, <br>High Effect Size = Enhanced Activity",
+      "activation_pH6": "Low Effect Size = Abolished Activity, <br>High Effect Size = Enhanced Activity",
+      "activation_pH6_ogr": "Low Effect Size = Abolished Activity, <br>High Effect Size = Enhanced Activity",
+      "activation_pH65": "Low Effect Size = Abolished Activity, High Effect Size = Enhanced Activity",
+      "activation_pH65_ogr": "Low Effect Size = Abolished Activity, High Effect Size = Enhanced Activity"
+    }
   }
 }
