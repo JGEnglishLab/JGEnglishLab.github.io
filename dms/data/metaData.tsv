@@ -1,0 +1,3 @@
+protein	raw_file	gpcrdb_id	gnomad_file
+OCT1	oct1_scores_processed_like_original.csv		gnomAD_v4.0.0_ENSG00000175003_2024_02_17_09_38_07.csv
+GPR68	GPR68_scores_like_original.csv	ogr1_human	gnomAD_v4.0.0_ENST00000650645_2024_03_11_13_25_09.csv

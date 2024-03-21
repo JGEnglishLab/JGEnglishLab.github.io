@@ -25,8 +25,6 @@ acidLookup<-function(x){
 }
 
 
-
-
 metaData = read_tsv("metaData.tsv")
 final_df = data.frame()
 
@@ -53,9 +51,6 @@ if(unique_vals["gpcrdb_id"] + na_vals["gpcrdb_id"] != nrow(metaData)){
 if(unique_vals["gnomad_file"] + na_vals["gnomad_file"] != nrow(metaData)){
   stop("Every value of 'gnomad_file' column in meta data must be unique or empty")
 }
-if(unique_vals["anonymous_name"] + na_vals["anonymous_name"] != nrow(metaData)){
-  stop("Every value of 'anonymous_name' column in meta data must be unique or empty")
-}
 print("The meta data file looks good!")
 
 
@@ -65,8 +60,7 @@ by(metaData, seq_len(nrow(metaData)), function(row) {
   cur_protein = row$protein
   cur_gpcr_id = row$gpcrdb_id
   cur_gnomad_file = row$gnomad_file
-  cur_anonymous_name = row$anonymous_name
-  
+
   print(cur_raw_file)
   print(cur_protein)
   print(cur_gpcr_id)
@@ -80,7 +74,6 @@ by(metaData, seq_len(nrow(metaData)), function(row) {
     df = read_tsv(paste0("raw_data/", cur_raw_file), col_names = F)
   } else if(endsWith(cur_raw_file, ".csv")){
     df = read_csv(paste0("raw_data/", cur_raw_file), col_names = F)
-    
   }
   
   df %>% filter(X1 != "hgvs") -> df
@@ -114,14 +107,10 @@ by(metaData, seq_len(nrow(metaData)), function(row) {
     mutate(mut = gsub(")", "", mut)) %>%
     mutate(final_number = str_extract(mut, "\\d+"))%>%
     mutate(mut = case_when(
-      mut == "del" ~ "d1",
-      # endsWith(mut, "insG") ~ "iG",
-      # endsWith(mut, "insGS") ~ "iGS",
-      # endsWith(mut, "insGSG") ~ "iGSG",
-      # Trying out shorter names for vis
       endsWith(mut, "insG") ~ "i1",
       endsWith(mut, "insGS") ~ "i2",
       endsWith(mut, "insGSG") ~ "i3",
+      mut == "del" ~ "d1",
       endsWith(mut, "del") & as.numeric(final_number)-as.numeric(pos) ==1 ~ "d2",
       endsWith(mut, "del") & as.numeric(final_number)-as.numeric(pos) ==2 ~ "d3",
       TRUE ~ mut
@@ -182,10 +171,6 @@ by(metaData, seq_len(nrow(metaData)), function(row) {
       mutate(mut = gsub("_\\D{3}\\d+ins", "ins", mut)) %>% 
       mutate(mut = case_when(
         mut == "del" ~ "d1",
-        # endsWith(mut, "insG") ~ "iG",
-        # endsWith(mut, "insGS") ~ "iGS",
-        # endsWith(mut, "insGSG") ~ "iGSG",
-        # Trying out shorter names for vis
         endsWith(mut, "insGly") ~ "i1",
         endsWith(mut, "insGlySer") ~ "i2",
         endsWith(mut, "insGlySerGly") ~ "i3",
@@ -202,10 +187,6 @@ by(metaData, seq_len(nrow(metaData)), function(row) {
     gnomad$wt = as.character(gnomad$wt)
     
     left_join(score, gnomad, relationship = "many-to-many") -> score
-    
-    
-    
-    
   },
   error = function(cond){
     print(paste0("NO GNOMAD FILE FOUND FOR ",cur_protein))
@@ -237,6 +218,11 @@ by(metaData, seq_len(nrow(metaData)), function(row) {
     if (response_status == 200){
       correct_gpcrdb_id = protein_data$sequence == sequence
     }
+  }
+  
+  if (!correct_gpcrdb_id && !is.na(cur_gpcr_id)){
+    print(paste0("The protein found by the gpcrdb_id: ", cur_gpcr_id, " doesn't match the protein found in the raw data!"))
+    print("The gpcrdb_id will not be used.")
   }
   
   ####################################################################################
@@ -332,6 +318,7 @@ by(metaData, seq_len(nrow(metaData)), function(row) {
   ####################################################################################
   #                           Final steps
   ####################################################################################
+  #Get the mean and sd of the synonymous mutations
   score %>% 
     filter(wt == mut & !is.na(value)) %>%
     group_by(condition) %>%
@@ -339,19 +326,7 @@ by(metaData, seq_len(nrow(metaData)), function(row) {
               syn_sd = sd(as.numeric(value))) %>% 
     right_join(score) -> score
   
-  #This is how they do it.
-  #Seems identical to what I have above.
-  # fit <- fitdistr(
-  #   as.numeric((score %>% filter(wt == mut & !is.na(value) & condition == "dms_7") %>% dplyr::select(value))$value) ,
-  #   densfun = "normal"
-  # )
-  
-  if (!is.na(cur_anonymous_name)){
-    score$protein = cur_anonymous_name
-    score$wt = "X"
-  } else{
-    score$protein = cur_protein
-  }
+  score$protein = cur_protein
   
   #Remove name column
   score %>% dplyr::select(-name) -> score
@@ -362,6 +337,3 @@ by(metaData, seq_len(nrow(metaData)), function(row) {
 
 
 write_csv(final_df, "dms_data_wrangled.csv")
-
-
-
