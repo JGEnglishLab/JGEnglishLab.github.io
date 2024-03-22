@@ -1,70 +1,71 @@
 {
   "OCT1": {
-    "experiment_description": "Description for protein 2",
+    "experiment_description": "Mutational scan of OCT1 to determine mutational effects on protein abundance and transport of SM73",
     "protein_type": "Transporter",
-    "publication_name": "Add the acutal name of the publication",
-    "publication_link": "the url",
+    "cell_type": "HEK293T",
+    "publication_name": "The full spectrum of OCT1 (SLC22A1) mutations bridges transporter biophysics to drug pharmacogenomics",
+    "publication_link": "https://www.biorxiv.org/content/10.1101/2023.06.06.543963v1.full",
     "conditions": {
-      "OSM73": {
-        "low": "Description for Low",
-        "high": "Description for high",
-        "assay_description": "assay descrptions"
+      "0SM73": {
+        "low": "gain of function",
+        "high": "loss of function",
+        "assay_description": "cytotoxicity"
       },
       "1SM73": {
-        "low": "Description for Low",
-        "high": "Description for high",
-        "assay_description": "assay descrptions"
+        "low": "gain of function",
+        "high": "loss of function",
+        "assay_description": "cytotoxicity"
       },
       "Abundance": {
-        "low": "Description for Low",
-        "high": "Description for high",
-        "assay_description": "assay descrptions"
+        "low": "lower protein abundance relative to WT",
+        "high": "higher protein abundance relative to WT",
+        "assay_description": "split mNeonGreen PCA"
       }
     }
   },
   "GPR68": {
-    "experiment_description": "Description for GPR68",
+    "experiment_description": "Mutational scan of GPR68 to determine mutational effects on expression and cAMP signaling",
     "protein_type": "GPCR",
-    "cell_type": "HEK293t",
-    "construct": "Signal-Halo-MOR-mNeonGreenpt11",
+    "cell_type": "HEK293T",
+    "construct": "Signal-FLAG-GPR68-mNeonGreen11",
     "insertion_info": "i1 = insert G, i2 = insert GS, i3 = insert GSG",
-    "publication_name": "Add the acutal name of the publication",
-    "publication_link": "the url",
+    "publication_name": "Publication TBD",
+    "publication_link": "TBD",
     "conditions": {
       "Surface":{
         "low": "Low Surface Expression",
         "high": "High Surface Expression",
-        "assay_description": "Surface expression is determined with an impermeable dye for an n-terminally tagged halo tag."
+        "assay_description": "Surface expression measured using anti-FLAG antibody"
       },
       "activation_pH55": {
         "low": "Diminished Activity",
         "high": "Enhanced Activity",
-        "assay_description": "assay descrption"
+        "assay_description": "cAMP signaling"
       },
       "activation_pH55_ogr": {
         "low": "Diminished Activity",
         "high": "Enhanced Activity",
-        "assay_description": "assay descrption"
+        "assay_description": "cAMP signaling with ogerin"
       },
       "activation_pH6": {
         "low": "Diminished Activity",
         "high": "Enhanced Activity",
-        "assay_description": "assay descrption"
+        "assay_description": "cAMP signaling"
       },
       "activation_pH6_ogr": {
         "low": "Diminished Activity",
         "high": "Enhanced Activity",
-        "assay_description": "assay descrption"
+        "assay_description": "cAMP signaling with ogerin"
       },
       "activation_pH65": {
         "low": "Diminished Activity",
         "high": "Enhanced Activity",
-        "assay_description": "assay descrption"
+        "assay_description": "cAMP signaling"
       },
       "activation_pH65_ogr": {
         "low": "Diminished Activity",
         "high": "Enhanced Activity",
-        "assay_description": "assay descrption"
+        "assay_description": "cAMP signaling with ogerin"
       }
     }
   }
