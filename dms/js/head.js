@@ -107,6 +107,15 @@ class Head{
         d3.select("#methods-text").style("color", "black")
     })
 
+    ///////////////////////////////////////////////////////////////////////////////////////////
+    //Click on methods (Second interaction)
+    //Used to copy publication link to clipboard
+    d3.select("#methods-highlight-div")
+    .on("click", function(){
+      let cur_protein = descriptor_data[sequence.selected_protein]
+      let cur_link = cur_protein.publication_link
+      navigator.clipboard.writeText(cur_link);
+    })
 
     ///////////////////////////////////////////////////////////////////////////////////////////
     //Sort Amino Acids (Third interaction)

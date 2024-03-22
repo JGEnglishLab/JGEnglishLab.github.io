@@ -610,8 +610,11 @@ class Scatter{
                     defaultMouseover("200px")
                 })
                 .on("mousemove", function(event){
+                    // let selected_protein_conditions = that.descriptor_data[that.sequence.selected_protein].conditions
                     let selected_protein_conditions = that.descriptor_data[that.sequence.selected_protein].conditions
-                    defaultMousemove(selected_protein_conditions[that.second_condition], event,-100,30)
+                    let selected_condition = selected_protein_conditions[that.second_condition]
+                    let text = formatConditionText(selected_condition)
+                    defaultMousemove(text, event,-100,30)
                 })
                 .on("mouseleave", function(){
                     defaultMouseleave()
@@ -629,8 +632,11 @@ class Scatter{
                     defaultMouseover("200px")
                 })
                 .on("mousemove", function(event){
+                    // let selected_protein_conditions = that.descriptor_data[that.sequence.selected_protein].conditions
                     let selected_protein_conditions = that.descriptor_data[that.sequence.selected_protein].conditions
-                    defaultMousemove(selected_protein_conditions[that.sequence.selected_condition], event,0,30)
+                    let selected_condition = selected_protein_conditions[that.sequence.selected_condition]
+                    let text = formatConditionText(selected_condition)
+                    defaultMousemove(text, event,0,30)
                 })
                 .on("mouseleave", function(){
                     defaultMouseleave()

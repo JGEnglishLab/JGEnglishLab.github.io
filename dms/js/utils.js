@@ -1,18 +1,21 @@
-//"Information on things like what the protein is or the conditions of the DMS <br><br> We could make it so clicking this copies a link to your clip board. Maybe a link to the linked paper??<br><br>This information could change per protein and condition<br><br>Also would be a good place to say what i1 i2 and i3 mean if those are going to change between protein<br><br>Designed and created by Samuel Himes, English Lab"
 function writeMethodsInfo(protein, descriptor_data){
-    let protein_description = descriptor_data[protein].protein_description
+    let experiment_description = descriptor_data[protein].experiment_description
     let protein_type = descriptor_data[protein].protein_type
     let cell_type = descriptor_data[protein].cell_type
     let construct_info = descriptor_data[protein].construct
     let insertion_info = descriptor_data[protein].insertion_info
+    let publication_name = descriptor_data[protein].publication_name
 
     let return_string = ""
 
-    if (protein_description !== undefined){
-        return_string = return_string + "Protein Description: " + protein_description + "<br><br>"
+    if (experiment_description !== undefined){
+        return_string = return_string + "Experiment Description: " + experiment_description + "<br><br>"
     }
     if (protein_type !== undefined){
         return_string = return_string + "Protein Type: " + protein_type + "<br><br>"
+    }
+    if (protein_type !== undefined){
+        return_string = return_string + "Publication Name (click to copy link): " + publication_name + "<br><br>"
     }
     if (cell_type !== undefined){
         return_string = return_string + "Cell Type: " + cell_type + "<br><br>"
@@ -29,6 +32,16 @@ function writeMethodsInfo(protein, descriptor_data){
     return(return_string)
 }
 
+//When the "Effect Size" text or the axis labels of the scatter plot are highlighted 
+//A tool tip pops up to describe what the condition is.
+//The format of the condition object is in the description.json file
+function formatConditionText(condition){
+    let assay_text = "Assay Description: " + condition.assay_description + "<br><br>"
+    let low_txt = "Low Effect Size: " + condition.low + "<br>"
+    let high_text = "High Effect Size:  " + condition.high + "<br>"
+
+    return assay_text + high_text + low_txt
+}
 
 //Loads in svg (Used for loading snake svg)
 //svgPath should be a path to an XML file

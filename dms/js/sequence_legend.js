@@ -42,7 +42,7 @@ class SequenceLegend{
         }
         function mousemove(d){
 -            d3.select("#default_tooltip")
-                .html("Selectors used to pick top and bottom percentiles<br>Anything above or below selected percentiles will be the same color")
+                .html("Sliders used to pick top and bottom percentiles<br>Anything above or below selected percentiles will be the same color")
                 .style("left", `${d.clientX - 150}px`)
                 .style("top", `${d.clientY + 40}px`)
         }
@@ -119,7 +119,9 @@ class SequenceLegend{
         })
         .on("mousemove", function(event){
             let selected_protein_conditions = that.descriptor_data[that.sequence.selected_protein].conditions
-            defaultMousemove(selected_protein_conditions[that.sequence.selected_condition], event,-100,30)
+            let selected_condition = selected_protein_conditions[that.sequence.selected_condition]
+            let text = formatConditionText(selected_condition)
+            defaultMousemove(text, event,-100,30)
         })
         .on("mouseleave", function(event,d){
             defaultMouseleave()
